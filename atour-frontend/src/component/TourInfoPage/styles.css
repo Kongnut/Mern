@@ -1,0 +1,164 @@
+.tourInfo-image {
+  width: 100%;
+  height: 400px;
+}
+.tourInfo-container {
+  padding: 40px 10% 0px 10%;
+}
+
+.tourInfo-header {
+  display: flex;
+}
+
+.tourInfo-headerText {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 26pt;
+  max-width: 500px;
+}
+
+.tourInfo-edit-btn {
+  width: 100px;
+  background-color: #26abdc;
+  border-color: #26abdc;
+}
+
+.tourInfo-user-container {
+  margin-left: auto;
+  margin-top: auto;
+}
+
+.tourInfo-review {
+  margin-bottom: 50px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tourInfo-userName {
+  margin-top: 10px;
+  color: #26abdc;
+  cursor: pointer;
+}
+
+.tourInfo-divider {
+  width: 100%;
+  margin: 15px 0 35px 0;
+  size: 10px;
+  border: solid 2px;
+}
+
+.tourInfo-above-divider {
+  display: flex;
+  width: 100%;
+}
+
+.tourInfo-detail-container {
+  display: flex;
+  width: 100%;
+  min-height: 400px;
+}
+
+.tourInfo-detail {
+  width: 70%;
+  padding-right: 50px;
+}
+
+.tourInfo-info-container {
+  justify-content: right;
+  width: 30%;
+  padding: 20px;
+  border: solid 1px #e3e3e3;
+  height: 0%;
+}
+
+.tourInfo-info-group-size {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 40%;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  height: 43px;
+  border-radius: 0.28571429rem;
+  text-align: center;
+}
+
+.tourInfo-info-header {
+  /* margin-bottom: 10px; */
+  line-height: 30px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.tourInfo-info-header-item {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.tourInfo-info-facebook {
+  margin-top: 10px;
+  color: #4267b2;
+  padding-left: 20%;
+  font-size: 40px;
+}
+
+.tourInfo-info-instagram {
+  margin-top: 10px;
+  color: lightcoral;
+  padding-left: 20%;
+  font-size: 40px;
+}
+
+.tourInfo-info-item {
+  margin-left: 15px;
+  font-size: 16px;
+}
+
+.tourInfo-info-price-container {
+  display: flex;
+  font-size: 20px;
+}
+
+.tourInfo-booking-submit {
+  width: 100%;
+  margin-top: 10px;
+  border: solid 1px #26abdc;
+  background-color: #26abdc;
+  color: white;
+  border-radius: 0.28571429rem;
+  height: 35px;
+}
+
+.tourInfo-booking-submit-disabled {
+  width: 100%;
+  margin-top: 10px;
+  border: solid 1px #cccccc;
+  background-color: #cccccc;
+  color: white;
+  border-radius: 0.28571429rem;
+  height: 35px;
+}
+
+.tourInfo-booking-submit:hover {
+  border: solid 1px #2297c7;
+  background-color: #2297c7;
+}
+
+.tourInfo-stars {
+  padding: 10px 0px 0px 10px;
+}
+
+@media screen and (max-width: 375px) {
+  .tourInfo-info-container {
+    margin-top: 30px;
+    width: 100%;
+  }
+  .tourInfo-detail {
+    width: 100%;
+    padding: 0;
+  }
+
+  .tourInfo-detail-container {
+    display: block;
+    width: 100%;
+  }
+}

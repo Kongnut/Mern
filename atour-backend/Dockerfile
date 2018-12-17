@@ -7,10 +7,10 @@ ADD . /app
 
 # --> Install dependencies
 WORKDIR /app
-RUN npm install
+# RUN npm install
 
 # --> Expose our server port.
-EXPOSE 3000
+EXPOSE 8081
 # --> Run our app.
 RUN npm run build
 CMD ["node", "dist/server.js"]

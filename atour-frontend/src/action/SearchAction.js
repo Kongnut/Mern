@@ -3,7 +3,7 @@ import { API_ENDPOINT } from "../utils/utils";
 
 export const ON_CHANGE = "ON_CHANGE";
 export const ON_SEARCH_TOUR = "ON_SEARCH_TOUR";
-export const ON_SEARCH_GUIDE = "ON_SEARCH_GUIDE";
+export const ON_SEARCH_USER = "ON_SEARCH_USER";
 
 export function onChange(value) {
   return {
@@ -17,9 +17,8 @@ export function onSearch(keyword, isTour) {
     try {
       if (isTour) {
         if (keyword === "") {
-          console.log("EVERYTHING");
           const res = await axios
-            .get("http://" + API_ENDPOINT + "/customer/searchTours", {
+            .get("http://" + API_ENDPOINT + "/user/searchTours", {
               keyword
             })
             .then(res => {
@@ -31,7 +30,7 @@ export function onSearch(keyword, isTour) {
           });
         } else {
           const res = await axios
-            .post("http://" + API_ENDPOINT + "/customer/searchTour", {
+            .post("http://" + API_ENDPOINT + "/user/searchTour", {
               keyword
             })
             .then(res => {
@@ -42,16 +41,6 @@ export function onSearch(keyword, isTour) {
             payload: res
           });
         }
-      } else {
-        const res = await axios
-          .post("http://" + API_ENDPOINT + "/customer/searchGuide", { keyword })
-          .then(res => {
-            return res.data;
-          });
-        return dispatch({
-          type: ON_SEARCH_GUIDE,
-          payload: res
-        });
       }
     } catch (e) {}
   };

@@ -1,59 +1,80 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Card, Image } from "semantic-ui-react";
-import { selectTour, selectGuide } from "../../action/SelectAction";
-import TourItem from "../Tours/TourItem/TourItem";
+import { selectTour, selectUser } from "../../action/SelectAction";
 import "./styles.css";
 
 class CardItem extends React.Component {
-  selectTour() {
-    this.props.selectTour(this.props.item);
+  constructor() {
+    super();
+    this.state = { redirect: false, to: "/" };
+  }
+  filterString(string, threshold) {
+    return (
+      string.substring(0, threshold) + (string.length > threshold ? "..." : "")
+    );
   }
   render() {
-    if (!this.props.isGuide) {
+    if (this.state.redirect) return <Redirect to={this.state.to} />;
+    if (!this.props.isUser) {
       return (
-        <TourItem
-          tour={this.props.item}
-          item={this.props.item}
-          theRole={this.props.role}
-        />
+        <Card
+          style={{ height: "480px" }}
+          onClick={() => {
+            this.setState({ redirect: true, to: "/tourInfo" });
+            this.props.selectTour(this.props.item);
+          }}
+        >
+          <Card.Content>
+            <Image
+              floated="right"
+              size="medium"
+              src={
+                this.props.item.imageUrl == null
+                  ? require("../../image/TourImage.png")
+                  : this.props.item.imageUrl
+              }
+              style={{ height: "200px" }}
+            />
+            <Card.Header>
+              {this.filterString(this.props.item.tourName, 30)}
+            </Card.Header>
+            <Card.Meta>{this.props.item.price + " baht"}</Card.Meta>
+            <Card.Description>
+              {this.filterString(this.props.item.detail, 100)}
+            </Card.Description>
+          </Card.Content>
+        </Card>
       );
     } else {
       const {
-        item: {
-          userName,
-          profile: { firstName, lastName, gender, profileImageUrl },
-          _type
-        },
+        item: { firstName, lastName, gender, profileImageUrl, age },
         item
       } = this.props;
       return (
-        <Link to="/guideInfo">
-          <Card
-            style={{ height: "380px" }}
-            onClick={() => {
-              this.props.selectGuide(item);
-            }}
-          >
-            <Image
-              src={profileImageUrl || require("../../image/TourImage.png")}
-              style={{ height: "250px" }}
-            />
-            <Card.Content>
-              <Card.Header>{userName}</Card.Header>
-              <Card.Content style={{ marginTop: "10px" }}>
-                {"Full Name: " + firstName + " " + lastName}
-              </Card.Content>
-              <Card.Content> {"Gender: " + gender}</Card.Content>
-              {_type === 2 ? (
-                <Card.Content>
-                  <div className="bad-guid">BAD GUIDE</div>
-                </Card.Content>
-              ) : null}
+        <Card
+          style={{ height: "380px" }}
+          onClick={() => {
+            this.setState({ redirect: true, to: "/viewProfile" });
+            this.props.selectUser(item);
+          }}
+        >
+          <Image
+            src={profileImageUrl || require("../../image/TourImage.png")}
+            style={{ height: "250px" }}
+          />
+          <Card.Content>
+            <Card.Header>
+              {" "}
+              {"Full Name: " + firstName + " " + lastName}
+            </Card.Header>
+            <Card.Content style={{ marginTop: "10px" }}>
+              {"Age: " + age}
             </Card.Content>
-          </Card>
-        </Link>
+            <Card.Content> {"Gender: " + gender}</Card.Content>
+          </Card.Content>
+        </Card>
       );
     }
   }
@@ -61,7 +82,7 @@ class CardItem extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
   selectTour: tour => dispatch(selectTour(tour)),
-  selectGuide: guide => dispatch(selectGuide(guide))
+  selectUser: user => dispatch(selectUser(user))
 });
 
 export default connect(

@@ -29,6 +29,12 @@
   color: #777777;
 }
 
+.sidemenu-icon {
+  width: 18.578px;
+  font-size: 20px;
+  margin-right: 10px;
+}
+
 .side-menu-userInfo:hover,
 .side-menu-userInfo:active,
 .side-menu-userInfo:visited,

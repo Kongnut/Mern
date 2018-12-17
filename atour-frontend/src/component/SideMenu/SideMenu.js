@@ -1,15 +1,22 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { loginModal, registerModal } from '../../action/ModalAction';
-import { logout } from '../../action/ApplicationAction';
-import { Link } from 'react-router-dom';
-import './styles.css';
-import $ from 'jquery';
+import React from "react";
+import { connect } from "react-redux";
+import { FACEBOOK_KEY } from "../../utils/utils";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import { logout, login } from "../../action/ApplicationAction";
+import PopUpModal from "../../component/PopUpModal/PopUpModal";
+import { Link } from "react-router-dom";
+import "./styles.css";
+import $ from "jquery";
 
 class SideMenu extends React.Component {
+  constructor() {
+    super();
+    this.state = { loginError: false };
+  }
   componentDidMount() {
-    $('.side-menu-menu').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', () =>
-      this.toHidden()
+    $(".side-menu-menu").bind(
+      "animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",
+      () => this.toHidden()
     );
   }
 
@@ -19,107 +26,93 @@ class SideMenu extends React.Component {
   }
 
   toHidden() {
-    if (this.props.sideMenuStatus === 'isHidding') this.props.setSideMenuStatus('hidden');
+    if (this.props.sideMenuStatus === "isHidding")
+      this.props.setSideMenuStatus("hidden");
+  }
+
+  loginWithFacebook(res) {
+    if (res.error) {
+      this.setState({ loginError: true });
+      return;
+    }
+    const {
+      first_name,
+      last_name,
+      picture: {
+        data: { url }
+      },
+      gender,
+      birthday
+    } = res;
+    const userInfo = {
+      firstName: first_name,
+      lastName: last_name,
+      profileImageUrl: url,
+      userId: res.userID,
+      gender,
+      age: new Date().getFullYear() - parseInt(birthday.substring(6, 10))
+    };
+    this.props.login(userInfo);
   }
 
   renderNotSignInSideMenu() {
     return (
-      <div>
-        <div
-          className={'dropdown-item side-menu-item'}
-          onClick={() => {
-            this.onSignUpSideMenu();
-          }}
-        >
-          <i className="fa fa-user-plus topbanner-icon" />
-          Sign up
-        </div>
-        <div
-          className={'dropdown-item side-menu-item'}
-          onClick={() => {
-            this.onLoginSideMenu();
-          }}
-        >
-          <i className="fa fa-sign-in topbanner-icon" />
-          Login
-        </div>
-      </div>
+      <FacebookLogin
+        appId={FACEBOOK_KEY}
+        fields="name,first_name,last_name,birthday,gender,picture.height(2048)"
+        scope="public_profile,user_gender,user_birthday"
+        autoLoad
+        callback={res => {
+          this.loginWithFacebook(res);
+          if (!res.error) this.onCloseSideMenu();
+        }}
+        render={renderProps => (
+          <div
+            className={"dropdown-item side-menu-item"}
+            onClick={renderProps.onClick}
+          >
+            <i className="fa fa-facebook sidemenu-icon" />
+            Login via facebook
+          </div>
+        )}
+      />
     );
   }
 
   renderSignInSideMenu() {
     const {
       path,
-      userInfo: { role, userName },
+      user: { firstName }
     } = this.props;
-    let userFunction;
-    if (role === 'Customer') {
-      userFunction = (
-        <Link className="side-menu-link" to="/bookedHistory">
+    return (
+      <div>
+        <div className="dropdown-item side-menu-userInfo">
+          {firstName.substring(0, 8)}
+        </div>
+        <Link className="side-menu-link" to="/editProfile">
           <div
             className={
-              'dropdown-item side-menu-item side-menu-user' +
-              (path === '/bookedHistory' ? ' side-menu-selected-item' : '')
+              "dropdown-item side-menu-item side-menu-user" +
+              (path === "/editProfile" ? " side-menu-selected-item" : "")
+            }
+            onClick={() => this.onCloseSideMenu()}
+          >
+            <i className="fa fa-cog topbanner-icon" />
+            Edit Contact Info
+          </div>
+        </Link>
+        <Link className="side-menu-link" to="/publishedTour">
+          <div
+            className={
+              "dropdown-item side-menu-item side-menu-user" +
+              (path === "/publishedTour" ? " side-menu-selected-item" : "")
             }
             onClick={() => this.onCloseSideMenu()}
           >
             <i className="fa fa-calendar topbanner-icon" />
-            Booked History
+            Published Tour
           </div>
         </Link>
-      );
-    } else if (role === 'Guide') {
-      userFunction = (
-        <div>
-          <Link className="side-menu-link" to="/publishedTour">
-            <div
-              className={
-                'dropdown-item side-menu-item side-menu-user' +
-                (path === '/bookedHistory' ? ' side-menu-selected-item' : '')
-              }
-              onClick={() => this.onCloseSideMenu()}
-            >
-              <i className="fa fa-calendar topbanner-icon" />
-              Published Tour
-            </div>
-          </Link>
-          <Link className="side-menu-link" to="/viewDealtTrip">
-            <div
-              className={
-                'dropdown-item side-menu-item side-menu-user' +
-                (path === '/viewDealtTrip' ? ' side-menu-selected-item' : '')
-              }
-              onClick={() => this.onCloseSideMenu()}
-            >
-              <i className="fa fa-th-list topbanner-icon" />
-              View Dealt Trip
-            </div>
-          </Link>
-        </div>
-      );
-    }
-    return (
-      <div>
-        <div className="dropdown-item side-menu-userInfo">
-          {role}
-          {': '}
-          {userName.substring(0, 8)}
-        </div>
-        {userFunction}
-        {role !== 'Admin' && (
-          <Link className="side-menu-link" to="/editProfile">
-            <div
-              className={
-                'dropdown-item side-menu-item side-menu-user' +
-                (path === '/editProfile' ? ' side-menu-selected-item' : '')
-              }
-              onClick={() => this.onCloseSideMenu()}
-            >
-              <i className="fa fa-cog topbanner-icon" />
-              Edit Profile
-            </div>
-          </Link>
-        )}
         <Link className="side-menu-link" to="/">
           <div
             className="dropdown-item side-menu-item side-menu-user"
@@ -134,20 +127,26 @@ class SideMenu extends React.Component {
   }
 
   renderSideMenu() {
-    const renderUserInfo = this.props.userInfo.userName
+    const renderUserInfo = this.props.user.token
       ? this.renderSignInSideMenu()
       : this.renderNotSignInSideMenu();
     return (
       <div>
         <div className="side-menu" />
         <Link className="side-menu-link" to="/searchForTour">
-          <div className={'dropdown-item side-menu-item'} onClick={() => this.onCloseSideMenu()}>
+          <div
+            className={"dropdown-item side-menu-item"}
+            onClick={() => this.onCloseSideMenu()}
+          >
             <i className="fa fa-search topbanner-icon" /> Search for Tour
           </div>
         </Link>
-        <Link className="side-menu-link" to="/searchForGuide">
-          <div className="dropdown-item side-menu-item" onClick={() => this.onCloseSideMenu()}>
-            <i className="fa fa-search topbanner-icon" /> Search for Guide
+        <Link className="side-menu-link" to="/searchForUser">
+          <div
+            className="dropdown-item side-menu-item"
+            onClick={() => this.onCloseSideMenu()}
+          >
+            <i className="fa fa-search topbanner-icon" /> Search for User
           </div>
         </Link>
         {renderUserInfo}
@@ -158,27 +157,16 @@ class SideMenu extends React.Component {
   onClickOpenMenu() {
     const { sideMenuStatus } = this.props;
     let nextStatus;
-    if (sideMenuStatus === 'hidden') nextStatus = 'isShowing';
-    else if (sideMenuStatus === 'isShowing') nextStatus = 'isHidding';
-    // else if (sideMenuStatus === "isHidding") nextStatus = "isShowing";
+    if (sideMenuStatus === "hidden") nextStatus = "isShowing";
+    else if (sideMenuStatus === "isShowing") nextStatus = "isHidding";
     else return;
     this.props.setSideMenuStatus(nextStatus);
   }
 
   onCloseSideMenu() {
-    if (this.props.sideMenuStatus === 'isShowing') {
-      this.props.setSideMenuStatus('isHidding');
+    if (this.props.sideMenuStatus === "isShowing") {
+      this.props.setSideMenuStatus("isHidding");
     }
-  }
-
-  onLoginSideMenu() {
-    this.onCloseSideMenu();
-    this.props.openLoginModal();
-  }
-
-  onSignUpSideMenu() {
-    this.onCloseSideMenu();
-    this.props.openRegisterModal();
   }
 
   renderSideMenuButton() {
@@ -198,11 +186,18 @@ class SideMenu extends React.Component {
 
   render() {
     const { sideMenuStatus } = this.props;
-    const MenuClassName = 'side-menu-menu ' + sideMenuStatus;
-    const Menu = sideMenuStatus === 'hidden' ? null : this.renderSideMenu();
-    const height = sideMenuStatus === 'hidden' ? 0 : window.innerHeight;
+    const { loginError } = this.state;
+    const MenuClassName = "side-menu-menu " + sideMenuStatus;
+    const Menu = sideMenuStatus === "hidden" ? null : this.renderSideMenu();
+    const height = sideMenuStatus === "hidden" ? 0 : window.innerHeight;
     return (
       <div className={MenuClassName} style={{ height }}>
+        <PopUpModal
+          isOpen={loginError ? true : false}
+          onCloseModal={() => this.setState({ loginError: false })}
+          headerText={"Login Fail"}
+          bodyText={"Facebook Auth error"}
+        />
         {Menu}
       </div>
     );
@@ -210,14 +205,13 @@ class SideMenu extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  openRegisterModal: () => dispatch(registerModal(true)),
-  openLoginModal: () => dispatch(loginModal(true)),
   logout: () => dispatch(logout()),
+  login: userInfo => dispatch(login(userInfo))
 });
 
 const mapStateToProps = state => ({
-  userInfo: state.user,
-  width: state.app.width,
+  user: state.user,
+  width: state.app.width
 });
 
 export default connect(

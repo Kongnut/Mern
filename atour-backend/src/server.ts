@@ -1,13 +1,10 @@
-import * as cors from 'cors';
-import app from './app';
-import { initMongo } from './db';
-import Tour from './routes/Tour';
-import Guide from './routes/Guide';
-import Customer from './routes/Customer';
-import Admin from './routes/Admin';
-import Trip from './routes/Trip';
+import * as cors from "cors";
+import app from "./app";
+import { initMongo } from "./db";
+import Tour from "./routes/Tour";
+import User from "./routes/User";
 
-const PORT = 3000;
+const PORT = 8081;
 
 async function main() {
   const { db } = await initMongo();
@@ -19,14 +16,11 @@ async function main() {
     next();
   });
 
-  app.use('/tour', Tour);
-  app.use('/guide', Guide);
-  app.use('/customer', Customer);
-  app.use('/admin', Admin);
-  app.use('/trip', Trip);
+  app.use("/tour", Tour);
+  app.use("/user", User);
 
   app.listen(PORT, () => {
-    console.log('Express server listening on port ' + PORT);
+    console.log("Express server listening on port " + PORT);
   });
 }
-main().then(() => console.log('OK'));
+main().then(() => console.log("OK"));

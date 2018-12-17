@@ -1,22 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
+import { FACEBOOK_KEY } from "../../utils/utils";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import "./styles.css";
 import { Link } from "react-router-dom";
-import RegisterModal from "../RegisterModal/RegisterModal";
-import { loginModal, registerModal } from "../../action/ModalAction";
-import { logout, resizeWindow } from "../../action/ApplicationAction";
-import { editProfile, getUserInfo } from "../../action/UserInfoAction";
-import { seeBookHistory } from "../../action/BookAction";
-import LoginModal from "../LoginModal/LoginModal";
+import { logout, resizeWindow, login } from "../../action/ApplicationAction";
 import logo from "../../image/Atour-logo.jpg";
 import autobind from "react-autobind";
 import SideMenu from "../SideMenu/SideMenu";
 import ClickOutSide from "react-click-outside-component";
+import PopUpModal from "../../component/PopUpModal/PopUpModal";
 
 class TopBanner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loginError: false,
       isClickedDropdown: false,
       sideMenuStatus: "hidden",
       topTransparent: props.transparent
@@ -33,7 +32,7 @@ class TopBanner extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.userInfo.userName !== this.props.userInfo.userName) {
+    if (nextProps.userInfo.userId !== this.props.userInfo.userId) {
       this.setState({ isClickedDropdown: false });
     }
     if (nextProps.width > 710) {
@@ -41,15 +40,6 @@ class TopBanner extends React.Component {
     }
     if (nextProps.transparent !== this.props.transparent) {
       this.setState({ topTransparent: nextProps.transparent });
-    }
-    if (
-      this.props.isLoginSuccess !== nextProps.isLoginSuccess &&
-      nextProps.isLoginSuccess
-    ) {
-      this.props.getUserInfo(
-        nextProps.userInfo.userName,
-        nextProps.userInfo.token
-      );
     }
   }
 
@@ -92,21 +82,47 @@ class TopBanner extends React.Component {
     this.setState({ sideMenuStatus: nextStatus });
   }
 
+  loginWithFacebook(res) {
+    if (res.error) {
+      this.setState({ loginError: true });
+      return;
+    }
+    const {
+      first_name,
+      last_name,
+      picture: {
+        data: { url }
+      },
+      gender,
+      birthday
+    } = res;
+    const userInfo = {
+      firstName: first_name,
+      lastName: last_name,
+      profileImageUrl: url,
+      userId: res.userID,
+      gender,
+      age: new Date().getFullYear() - parseInt(birthday.substring(6, 10))
+    };
+    this.props.login(userInfo);
+  }
+
   renderNotSignIn() {
     return (
       <div className="topbanner-user-container">
         <div className="topbanner-right">
-          <div
-            onClick={this.props.openRegisterModal}
-            className="topbanner-menu"
-          >
-            Sign up
-          </div>
-        </div>
-        <div className="topbanner-right">
-          <div className="topbanner-menu" onClick={this.props.openLoginModal}>
-            Login
-          </div>
+          <FacebookLogin
+            appId={FACEBOOK_KEY}
+            fields="name,first_name,last_name,birthday,gender,picture.height(2048)"
+            scope="public_profile,user_gender,user_birthday"
+            autoLoad
+            callback={this.loginWithFacebook}
+            render={renderProps => (
+              <div className="topbanner-menu" onClick={renderProps.onClick}>
+                Login via Facebook
+              </div>
+            )}
+          />
         </div>
       </div>
     );
@@ -118,60 +134,33 @@ class TopBanner extends React.Component {
         onClickOutside={() => this.setState({ isClickedDropdown: false })}
       >
         <div className="topbanner-login-dropdown">
-          {this.props.userInfo.role === "Customer" && (
-            <Link className="topbanner-link" to="/bookedHistory">
-              <div
-                className="dropdown-item"
-                onClick={() => {
-                  this.props.seeBookHistory(this.props.userInfo.customerId);
-                  this.setState({ isClickedDropdown: false });
-                }}
-              >
-                <i className="fa fa-calendar topbanner-icon" />
-                Booked History
-              </div>
-            </Link>
-          )}
-          {this.props.userInfo.role === "Guide" && (
-            <div>
-              <Link to="/publishedTour" className="topbanner-link">
-                <div
-                  className="dropdown-item"
-                  onClick={() => this.setState({ isClickedDropdown: false })}
-                >
-                  <i className="fa fa-calendar topbanner-icon" />
-                  Published Tour
-                </div>
-              </Link>
-              <Link to="/viewDealtTrips" className="topbanner-link">
-                <div
-                  className="dropdown-item"
-                  onClick={() => this.setState({ isClickedDropdown: false })}
-                >
-                  <i className="fa fa-th-list topbanner-icon" />
-                  View Dealt Trip
-                </div>
-              </Link>
-            </div>
-          )}
-          {this.props.userInfo.role !== "Admin" && (
+          <div>
             <Link to="/editProfile" className="topbanner-link">
               <div
                 className="dropdown-item"
                 onClick={() => {
-                  this.props.editProfile();
                   this.setState({ isClickedDropdown: false });
                 }}
               >
                 <i className="fa fa-cog topbanner-icon" />
-                Edit Profile
+                Edit Contact Info
               </div>
             </Link>
-          )}
+            <Link to="/publishedTour" className="topbanner-link">
+              <div
+                className="dropdown-item"
+                onClick={() => this.setState({ isClickedDropdown: false })}
+              >
+                <i className="fa fa-calendar topbanner-icon" />
+                Published Tour
+              </div>
+            </Link>
+          </div>
           <Link to="/" className="topbanner-link">
             <div
               className="dropdown-item"
               onClick={() => {
+                this.setState({ isClickedDropdown: false });
                 this.props.logout();
               }}
             >
@@ -188,9 +177,9 @@ class TopBanner extends React.Component {
           className="topbanner-login-banner"
           onClick={() => this.setState({ isClickedDropdown: true })}
         >
-          <div className="topbanner-role">{this.props.userInfo.role}</div>
-          <div className="topbanner-as-username">
-            {this.props.userInfo.userName.substring(0, 8)}
+          <div className="topbanner-atour">Atour</div>
+          <div className="topbanner-as-firstname">
+            {this.props.userInfo.firstName.substring(0, 8)}
           </div>
 
           <i className="fa fa-chevron-circle-down topbanner-dropdown-arrow" />
@@ -216,7 +205,7 @@ class TopBanner extends React.Component {
   }
 
   renderMenu() {
-    const renderSignIn = this.props.userInfo.userName
+    const renderSignIn = this.props.userInfo.token
       ? this.renderSignIn()
       : this.renderNotSignIn();
     return (
@@ -230,8 +219,8 @@ class TopBanner extends React.Component {
           </Link>
         </div>
         <div className="topbanner-right">
-          <Link to="/searchForGuide" className="topbanner-link">
-            <div className="topbanner-menu">Search for Guide</div>
+          <Link to="/searchForUser" className="topbanner-link">
+            <div className="topbanner-menu">Search for User</div>
           </Link>
         </div>
         {renderSignIn}
@@ -240,14 +229,18 @@ class TopBanner extends React.Component {
   }
 
   render() {
-    const { sideMenuStatus, topTransparent } = this.state;
+    const { sideMenuStatus, topTransparent, loginError } = this.state;
     const path = this.props.location.pathname;
     const renderMenu =
       this.props.width <= 710 ? this.renderSideMenuButton() : this.renderMenu();
     return (
       <div>
-        <LoginModal />
-        <RegisterModal />
+        <PopUpModal
+          isOpen={loginError ? true : false}
+          onCloseModal={() => this.setState({ loginError: false })}
+          headerText={"Login Fail"}
+          bodyText={"Facebook Auth error"}
+        />
         <div className="topbanner">
           <SideMenu
             sideMenuStatus={sideMenuStatus}
@@ -281,18 +274,13 @@ class TopBanner extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.user,
-  width: state.app.width,
-  isLoginSuccess: state.user.isLoginSuccess
+  width: state.app.width
 });
 
 const mapDispatchToProps = dispatch => ({
-  openRegisterModal: () => dispatch(registerModal(true)),
-  openLoginModal: () => dispatch(loginModal(true)),
   logout: () => dispatch(logout()),
-  resizeWindow: width => dispatch(resizeWindow(width)),
-  editProfile: () => dispatch(editProfile()),
-  getUserInfo: (userName, token) => dispatch(getUserInfo(userName, token)),
-  seeBookHistory: customerId => dispatch(seeBookHistory(customerId))
+  login: userInfo => dispatch(login(userInfo)),
+  resizeWindow: width => dispatch(resizeWindow(width))
 });
 
 export default connect(

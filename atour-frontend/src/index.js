@@ -6,31 +6,17 @@ import thunk from "redux-thunk";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import reducers from "./reducer";
-import App from "./component/App";
+import HomePage from "./component/HomePage/HomePage";
 import TopBanner from "./component/TopBanner/TopBanner";
-import BookedHistory from "./component/BookedHistory/BookedHistory";
-import EditProfile from "./component/EditProfile/EditProfile";
-import BookedHistoryInfo from "./component/BookedHistoryInfo/BookedHistoryInfo";
+import ProfilePage from "./component/ProfilePage/ProfilePage";
 
-import ViewDealtTripPage from "./component/ViewDealtTripPage";
 import SearchFor from "./component/SearchFor";
-import CustomerTourInfo from "./component/CustomerTourInfo/CustomerTourInfo";
-import GuideInfo from "./component/GuideInfo/GuideInfo";
-import GuideHome from "./component/Guide/GuideHome";
-import GuideTourInfo from "./component/Guide/GuideTourInfo/GuideTourInfo";
-import GuideViewPublishedTour from "./component/Guide/GuideViewPublishedTour";
+import TourInfoPage from "./component/TourInfoPage/TourInfoPage";
+import PublishedTourPage from "./component/PublishedTourPage/PublishedTourPage";
 
-import AdminHome from "./component/AdminHome";
-import AdminLogin from "./component/AdminLogin";
 require("dotenv").config();
 
-// const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-// const store = createStore(
-//   reducers,
-//   /* preloadedState, */ composeEnhancers(applyMiddleware(promise))
-// );
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
 
@@ -43,26 +29,21 @@ ReactDOM.render(
           render={props => <TopBanner transparent {...props} />}
         />
         <Switch>
-          <Route exact path="/" component={App} />
-          {/* <Route exact path="/" component={GuideHome} /> */}
-          <Route exact path="/bookedHistory" component={BookedHistory} />
-          <Route exact path="/editProfile" component={EditProfile} />
+          <Route exact path="/" component={HomePage} />
           <Route
             exact
-            path="/bookedHistoryInfo"
-            component={BookedHistoryInfo}
+            path="/editProfile"
+            render={props => <ProfilePage isEdit={true} {...props} />}
           />
-          <Route exact path="/customerTourInfo" component={CustomerTourInfo} />
-          <Route exact path="/guideInfo" component={EditProfile} />
-          <Route exact path="/minda" component={AdminLogin} />
-          <Route path="/minda/:type" component={AdminHome} />
-
-          <Route exact path="/viewDealtTrips" component={ViewDealtTripPage} />
+          <Route
+            exact
+            path="/viewProfile"
+            render={props => <ProfilePage isEdit={false} {...props} />}
+          />
+          <Route exact path="/tourInfo" component={TourInfoPage} />
           <Route exact path="/searchForTour" component={SearchFor} />
-          <Route exact path="/searchForGuide" component={SearchFor} />
-          <Route exact path="/guideHome" component={GuideHome} />
-          <Route exact path="/guideTourInfo" component={GuideTourInfo} />
-          <Route exact path="/publishedTour" component={GuideHome} />
+          <Route exact path="/searchForUser" component={SearchFor} />
+          <Route exact path="/publishedTour" component={PublishedTourPage} />
         </Switch>
       </div>
     </BrowserRouter>

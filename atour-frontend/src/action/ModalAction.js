@@ -1,25 +1,4 @@
 export const OPEN_MODAL = "OPEN_MODAL";
-export function registerModal(isOpen) {
-  let payload = "";
-  if (isOpen) {
-    payload = "register";
-  }
-  return {
-    type: OPEN_MODAL,
-    payload
-  };
-}
-
-export function loginModal(isOpen) {
-  let payload = "";
-  if (isOpen) {
-    payload = "login";
-  }
-  return {
-    type: OPEN_MODAL,
-    payload
-  };
-}
 
 export function closeAllModal() {
   return {
@@ -39,7 +18,7 @@ export function publishNewTour(isOpen) {
   };
 }
 
-export function editTour(isOpen) {
+export function editTourModal(isOpen) {
   let payload = "";
   if (isOpen) {
     payload = "editTour";

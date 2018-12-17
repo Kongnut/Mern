@@ -3,7 +3,7 @@ import { Flex } from "rebass";
 import CardItem from "./CardItem";
 
 const Cards = props => {
-  const { isGuide, items, role, tours } = props;
+  const { isUser, items, tours } = props;
   return (
     <Flex
       style={{
@@ -17,15 +17,10 @@ const Cards = props => {
       {items
         ? items.map(item => (
             <div
-              key={isGuide ? item.guideId : item.tourId}
+              key={isUser ? item.userId : item.tourId}
               style={{ margin: "10px 20px 10px 20px" }}
             >
-              <CardItem
-                item={item}
-                isGuide={isGuide}
-                role={role}
-                tours={tours}
-              />
+              <CardItem item={item} isUser={isUser} tours={tours} />
             </div>
           ))
         : null}

@@ -25,7 +25,7 @@
   align-items: baseline;
 }
 
-.topbanner-as-username {
+.topbanner-as-firstname {
   color: white;
   margin: 5px;
   margin-left: 0px;
@@ -58,7 +58,7 @@
   cursor: pointer;
 }
 
-.topbanner-role {
+.topbanner-atour {
   margin: 5px;
   border-radius: 4px;
   width: 80px;

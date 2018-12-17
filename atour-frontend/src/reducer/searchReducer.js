@@ -1,4 +1,3 @@
-import { combineReducers } from "redux";
 import { ON_CHANGE, ON_SEARCH_TOUR } from "../action/SearchAction";
 
 const initialState = {

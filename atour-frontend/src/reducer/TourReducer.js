@@ -1,36 +1,32 @@
 import { combineReducers } from "redux";
 import { SELECT_TOUR } from "../action/SelectAction";
 import { ON_SEARCH_TOUR } from "../action/SearchAction";
-import {
-  BOOK_TRIP_ERROR,
-  BOOK_TRIP,
-  CLEAR_BOOK_MESSAGE
-} from "../action/BookAction";
+import { EDIT_TOUR } from "../action/TourAction";
+import { GET_OTHER_USER_INFO } from "../action/UserInfoAction";
 const initialState = {
   tourList: [],
   selectedTour: {
     tourName: "",
     tourimage: "",
-    tourRating: "",
     price: "",
     detail: "",
     minGroupSize: "",
     maxGroupSize: "",
-    availableDates: "",
-    guideName: "",
-    location: ""
+    userId: ""
   },
-  bookMessage: ""
+  otherUserInfo: {
+    firstName: "",
+    lastName: "",
+    userId: "",
+    profileImageUrl: "",
+    publishedTour: []
+  }
 };
 
-function bookMessage(state = initialState.bookMessage, action) {
+function otherUserInfo(state = initialState.otherUserInfo, action) {
   switch (action.type) {
-    case BOOK_TRIP:
-      return "done";
-    case BOOK_TRIP_ERROR:
-      return action.payload.message;
-    case CLEAR_BOOK_MESSAGE:
-      return "";
+    case GET_OTHER_USER_INFO:
+      return action.payload;
     default:
       return state;
   }
@@ -47,6 +43,7 @@ function tourList(state = initialState.tourList, action) {
 
 function selectedTour(state = initialState.selectedTour, action) {
   switch (action.type) {
+    case EDIT_TOUR:
     case SELECT_TOUR:
       return action.payload;
     default:
@@ -54,5 +51,5 @@ function selectedTour(state = initialState.selectedTour, action) {
   }
 }
 
-const reducer = combineReducers({ tourList, selectedTour, bookMessage });
+const reducer = combineReducers({ tourList, selectedTour, otherUserInfo });
 export default reducer;

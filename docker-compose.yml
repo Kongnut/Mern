@@ -11,15 +11,6 @@ services:
       - db
     build: atour-backend
     ports:
-      - "3000:3000"
+      - "8081:8081"
     restart: always
 
-  atour-frontend:
-    depends_on:
-      - atour-backend
-    build: atour-frontend
-    ports:
-      - "8000:80"
-    environment: 
-      - API_ENDPOINT=atour-backend
-    restart: always

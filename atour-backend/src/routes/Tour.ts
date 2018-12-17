@@ -1,85 +1,54 @@
-import * as express from 'express';
-import * as uuid from 'uuid/v4';
-import { Db } from 'mongodb';
+import * as express from "express";
+import * as uuid from "uuid/v4";
+import { Db } from "mongodb";
 import {
   publishTourService,
   editTourService,
-  addTripService,
-  deleteTripService
-} from '../service/TourService';
-import { saveTour, getTour, saveTrip, deleteTripDb } from '../repository/Tour';
-import { getGuide, saveGuide } from '../repository/Guide';
+  deleteTourService
+} from "../service/TourService";
+import { saveTour, updateTour, deleteTour } from "../repository/Tour";
+import { updatePublishedTourOfUser } from "../repository/User";
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post("/publishTour", async (req, res) => {
   try {
     const db: Db = res.locals.db;
-    const { guideId, tourName, minSize, maxSize, price, detail, imageUrl } = req.body;
-    const tour = await publishTourService(
-      () => uuid(),
-      getGuide(db),
+    const { tour } = req.body;
+    tour.tourId = uuid();
+    const tours = await publishTourService(
       saveTour(db),
-      saveGuide(db)
-    )(guideId, tourName, minSize, maxSize, price, detail, imageUrl);
-    res.json(tour);
+      updatePublishedTourOfUser(db)
+    )(tour);
+    res.json(tours);
+  } catch (e) {
+    console.log(e);
+    res.json(e.message);
+  }
+});
+
+router.post("/editTour", async (req, res) => {
+  try {
+    const db: Db = res.locals.db;
+    const { tour } = req.body;
+    const newTour = await editTourService(
+      updateTour(db),
+      updatePublishedTourOfUser(db)
+    )(tour);
+    res.json(newTour);
   } catch (e) {
     res.json(e.message);
   }
 });
 
-router.post('/:tourId', async (req, res) => {
+router.post("/deleteTour", async (req, res) => {
   try {
     const db: Db = res.locals.db;
-    const { tourId } = req.params;
-    const {
-      tourName,
-      minimumSize,
-      maximumSize,
-      price,
-      detail,
-      imageUrl
-    } = req.body;
-    const tour = await editTourService(
-      getTour(db),
-      getGuide(db),
-      saveTour(db),
-      saveGuide(db)
-    )(tourId, tourName, minimumSize, maximumSize, price, detail, imageUrl);
-    res.json(tour);
-  } catch (e) {
-    res.json(e.message);
-  }
-});
-
-router.post('/:tourId/trips', async (req, res) => {
-  try {
-    const db: Db = res.locals.db;
-    const { tourId } = req.params;
-    const { date } = req.body;
-
-    console.log('hello', tourId);
-    const tour = await addTripService(
-      getTour(db),
-      saveTour(db),
-      saveTrip(db),
-      () => uuid()
-    )(tourId, date);
-    res.json(tour);
-  } catch (e) {
-    res.json(e.message);
-  }
-});
-
-router.delete('/:tourId/trips/:tripId', async (req, res) => {
-  try {
-    const db: Db = res.locals.db;
-    const { tourId, tripId } = req.params;
-    const tour = await deleteTripService(
-      getTour(db),
-      saveTour(db),
-      deleteTripDb(db)
-    )(tourId, tripId);
-    res.json(tour);
+    const { tour } = req.body;
+    const tours = await deleteTourService(
+      deleteTour(db),
+      updatePublishedTourOfUser(db)
+    )(tour);
+    res.json(tours);
   } catch (e) {
     res.json(e.message);
   }

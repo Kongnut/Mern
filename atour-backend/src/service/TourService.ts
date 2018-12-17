@@ -1,165 +1,43 @@
-import * as _ from 'lodash';
-import {
-  publishTour,
-  editTour,
-  IdGenerator,
-  addTrip,
-  deleteTrip
-} from '../domain/Tour';
-import {
-  SaveTourDb,
-  GetTourDb,
-  SaveTripDb,
-  DeleteTripDb,
-  GetTripDb
-} from '../repository/Tour';
-import { addPublishedTour, editPublishedTour } from '../domain/Guide';
-import { GetGuideDb, SaveGuideDb } from '../repository/Guide';
-import { Tour } from '../domain/types';
-import { TripDto } from './dtoTypes';
+import * as _ from "lodash";
 
-type PublishTourService = (
-  guideId: string,
-  tourName: string,
-  minSize: number,
-  maxSize: number,
-  price: number,
-  detail: string,
-  imageUrl?: string
-) => Promise<Tour>;
+import { SaveTourDb, UpdateTourDb, DeleteTourDb } from "../repository/Tour";
+import { UpdatePublishedTourOfUserDb } from "../repository/User";
 
-type EditTourService = (
-  tourId: string,
-  tourName: string | void,
-  minimumSize: number | void,
-  maximumSize: number | void,
-  price: number | void,
-  detail: string | void,
-  imageUrl: string | void
-) => Promise<Tour>;
+import { Tour } from "../domain/types";
 
-type AddTripService = (tourId: string, date: string) => Promise<Tour>;
+type PublishTourService = (tour: Tour) => Promise<Tour[]>;
 
-type DeleteTripService = (tourId: string, tripId: string) => Promise<Tour>;
+type EditTourService = (tour: Tour) => Promise<Tour>;
 
-type GetTripService = (tripId: string) => Promise<TripDto>;
+type DeleteTourService = (tour: Tour) => Promise<Tour[]>;
 
 export function publishTourService(
-  idGenerator: IdGenerator,
-  getGuideDb: GetGuideDb,
-  saveTourDb: SaveTourDb,
-  saveGuideDb: SaveGuideDb
+  saveTour: SaveTourDb,
+  savePublishedTourOfUser: UpdatePublishedTourOfUserDb
 ): PublishTourService {
-  return async (
-    guideId: string,
-    tourName: string,
-    minSize: number,
-    maxSize: number,
-    price: number,
-    detail: string,
-    imageUrl?: string
-  ) => {
-    const guide = await getGuideDb(guideId);
-    if (!guide) {
-      throw new Error('Guide not found');
-    }
-    const tour = publishTour(idGenerator)(
-      tourName,
-      minSize,
-      maxSize,
-      price,
-      detail,
-      guideId,
-      imageUrl
-    );
-    const addedGuide = addPublishedTour()(guide, tour);
-    await saveTourDb(tour);
-    await saveGuideDb(addedGuide);
-    return tour;
+  return async (tour: Tour) => {
+    await saveTour(tour);
+    return await savePublishedTourOfUser(tour.userId);
   };
 }
 
 export function editTourService(
-  getTourDb: GetTourDb,
-  getGuideDb: GetGuideDb,
-  saveTourDb: SaveTourDb,
-  saveGuideDb: SaveGuideDb
+  updateTour: UpdateTourDb,
+  updatePublishedTourOfUser: UpdatePublishedTourOfUserDb
 ): EditTourService {
-  return async (
-    tourId: string,
-    tourName?: string,
-    minimumSize?: number,
-    maximumSize?: number,
-    price?: number,
-    detail?: string,
-    imageUrl?: string
-  ) => {
-    const tour = await getTourDb(tourId);
-    const obj = {
-      tourName,
-      minimumSize,
-      maximumSize,
-      price,
-      detail,
-      imageUrl
-    };
-    const partialTour = _.fromPairs(_.toPairs(obj).filter(([k, v]) => v));
-
-    const editedTour = editTour()(tour, partialTour);
-
-    const guide = await getGuideDb(tour.guideId);
-    const editedGuide = await editPublishedTour()(guide, editedTour);
-    await saveTourDb(editedTour);
-    await saveGuideDb(editedGuide);
-    return editedTour;
+  return async (tour: Tour) => {
+    await updateTour(tour);
+    await updatePublishedTourOfUser(tour.userId);
+    return tour;
   };
 }
 
-export function addTripService(
-  getTourDb: GetTourDb,
-  saveTourDb: SaveTourDb,
-  saveTripDb: SaveTripDb,
-  idGenerator: IdGenerator
-): AddTripService {
-  return async (tourId: string, date: string) => {
-    const tour = await getTourDb(tourId);
-    const addedTrip = addTrip(idGenerator)(tour, new Date(date));
-    const {trips} = tour;
-    const addedTrips = [...trips,addedTrip]
-    const tripAddedTour = {...tour,trips: addedTrips}
-    await saveTourDb(tripAddedTour);
-    await saveTripDb(addedTrip);
-    return tripAddedTour;
-  };
-}
-
-export function deleteTripService(
-  getTourDb: GetTourDb,
-  saveTourDb: SaveTourDb,
-  deleteTripDb: DeleteTripDb
-): DeleteTripService {
-  return async (tourId, tripId) => {
-    const tour = await getTourDb(tourId);
-    const tripDeletedTour = deleteTrip()(tour, tripId);
-    await saveTourDb(tripDeletedTour);
-    await deleteTripDb(tripId);
-    return tripDeletedTour;
-  };
-}
-
-export function getTripService(
-  getTrip: GetTripDb,
-  getTour: GetTourDb,
-  getGuide: GetGuideDb
-): GetTripService {
-  return async (tripId: string) => {
-    const trip = await getTrip(tripId);
-    const tour = await getTour(trip.tourId);
-    const guide = await getGuide(tour.guideId);
-    return {
-      ...trip,
-      tour,
-      guide
-    };
+export function deleteTourService(
+  deleteTour: DeleteTourDb,
+  deletePublishedTourOfUser: UpdatePublishedTourOfUserDb
+): DeleteTourService {
+  return async (tour: Tour) => {
+    await deleteTour(tour);
+    return await deletePublishedTourOfUser(tour.userId);
   };
 }

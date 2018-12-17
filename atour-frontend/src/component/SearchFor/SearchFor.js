@@ -12,16 +12,13 @@ class SearchFor extends Component {
     this.props.onSearch("");
   }
   render() {
-    const { term, onChange, onSearch, tours, guides } = this.props;
+    const { term, onChange, onSearch, tours, userList } = this.props;
     const isTour = this.props.location.pathname === "/searchForTour";
-    const Header = "Search For " + (isTour ? "Tour" : "Guide");
-    const placeholder = isTour ? "Tour Name" : "Guide Name";
-    const items = isTour ? tours : guides;
+    const Header = "Search For " + (isTour ? "Tour" : "User");
+    const placeholder = isTour ? "Tour Name" : "User Name";
+    const items = isTour ? tours : userList;
     return (
-      <div
-        className="my fucking flag"
-        style={{ marginTop: "30px", marginBottom: "30px" }}
-      >
+      <div style={{ marginTop: "30px", marginBottom: "30px" }}>
         <Flex flexWrap="wrap" justifyContent="center">
           <Box width={4 / 5}>
             <Text fontSize={4} mb={4} mt={3}>
@@ -52,12 +49,7 @@ class SearchFor extends Component {
             </Flex>
 
             <Flex>
-              <Cards
-                items={items}
-                isGuide={!isTour}
-                role="customer"
-                tours={this.props.tours}
-              />
+              <Cards items={items} isUser={!isTour} tours={this.props.tours} />
             </Flex>
           </Box>
         </Flex>
@@ -70,7 +62,7 @@ export default connect(
   state => ({
     term: state.search,
     tours: state.tour.tourList,
-    guides: state.guide.guideList
+    userList: state.user.otherUserList
   }),
   { onChange, onSearch }
 )(SearchFor);
