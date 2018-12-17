@@ -18,9 +18,9 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
+      facebookUrl: "",
       phoneNumber: "",
-      profileImageUrl: "",
+      instagramUrl: "",
       isView: false,
       errorMessage: "",
       saveChanged: false
@@ -279,6 +279,7 @@ class Profile extends React.Component {
             <Cards isUser={false} items={publishedTour} />
           </div>
         ) : null}
+        <div style={{ marginBottom: "30px" }} />
       </div>
     );
   }

@@ -53,16 +53,7 @@ class PublishNewTourModal extends React.Component {
       }
     };
 
-    autobind(
-      this,
-      "renderPublishNewTour",
-      "onSubmitNewTourInfo",
-      "onCloseModal",
-      "onFieldChange",
-      "maximumSizeValidation",
-      "onSubmitted",
-      "validateAllValue"
-    );
+    autobind(this);
   }
 
   componentWillReceiveProps(nextProps) {

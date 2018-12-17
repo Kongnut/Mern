@@ -41,6 +41,16 @@ export function onSearch(keyword, isTour) {
             payload: res
           });
         }
+      } else {
+        const res = await axios
+          .post("http://" + API_ENDPOINT + "/user/searchUser", { keyword })
+          .then(res => {
+            return res.data;
+          });
+        return dispatch({
+          type: ON_SEARCH_USER,
+          payload: res
+        });
       }
     } catch (e) {}
   };
