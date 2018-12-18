@@ -2,12 +2,20 @@ import * as express from "express";
 import { Db } from "mongodb";
 import * as uuid from "uuid/v4";
 
-import { getUser, updateUser, updateUserContact } from "../repository/User";
+import {
+  getUser,
+  updateUser,
+  updateUserContact,
+  saveTour,
+  getSavedToursOfUser
+} from "../repository/User";
 
 import {
   loginService,
   getUserInfoService,
-  updateUserContactService
+  updateUserContactService,
+  saveTourService,
+  getSavedTourService
 } from "../service/UserService";
 import { searchTourService, searchUserService } from "../service/SearchService";
 import { searchTour, searchUser } from "../repository/Search";
@@ -48,13 +56,6 @@ router.post("/updateUserContact", async (req, res) => {
   }
 });
 
-router.get("/searchTours", async (req, res) => {
-  const db: Db = res.locals.db;
-  const cursor = await db.collection("tour").find();
-  const tours = await cursor.toArray();
-  res.json(tours);
-});
-
 router.post("/getUserInfo", async (req, res) => {
   try {
     const db: Db = res.locals.db;
@@ -91,4 +92,28 @@ router.post("/searchUser", async (req, res) => {
   }
 });
 
+router.post("/saveTour", async (req, res) => {
+  try {
+    const db: Db = res.locals.db;
+    const { userId, tour } = req.body;
+    const results = await saveTourService(saveTour(db))(userId, tour);
+    res.json(results);
+  } catch (error) {
+    console.log(error.message);
+    res.json({ results: null, error: error.message });
+  }
+});
+
+router.post("getSavedTour", async (req, res) => {
+  try {
+    const db: Db = res.locals.db;
+    const { userId } = req.body;
+    const results = await getSavedTourService(getSavedToursOfUser(db))(userId);
+
+    res.json(results);
+  } catch (error) {
+    console.log(error.message);
+    res.json({ results: null, error: error.message });
+  }
+});
 export default router;

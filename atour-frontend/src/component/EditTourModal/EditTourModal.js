@@ -120,7 +120,8 @@ class EditTourModal extends React.Component {
       const newTour = {
         ...tourInfo,
         tourId: this.props.tour.tourId,
-        userId: this.props.tour.userId
+        userId: this.props.tour.userId,
+        isPublished: this.props.tour.isPublished
       };
       this.props.editTour(newTour, this.props.token);
     }
@@ -177,7 +178,7 @@ class EditTourModal extends React.Component {
           }
           error={this.state.error.price}
         />
-        <div class="form-group">
+        <div className="form-group">
           <label>Group size</label>
           <Field
             label="from"

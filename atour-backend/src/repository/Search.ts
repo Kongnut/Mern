@@ -9,7 +9,7 @@ export function searchTour(db: Db): SearchTourDb {
     if (keyword === "") {
       const cursor = await db
         .collection("tour")
-        .find()
+        .find({ isPublished: true })
         .limit(9);
       const results = await cursor.toArray();
       return results;
@@ -19,7 +19,7 @@ export function searchTour(db: Db): SearchTourDb {
         .map(word => new RegExp(word, "i"));
       const cursor = await db
         .collection("tour")
-        .find({ tourName: { $in: keywords } });
+        .find({ tourName: { $in: keywords }, isPublished: true });
       const results = await cursor.toArray();
       return results;
     }

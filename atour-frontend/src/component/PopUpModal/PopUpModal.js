@@ -1,19 +1,19 @@
-import React from 'react';
-import Modal from 'react-modal';
-import './styles.css';
+import React from "react";
+import Modal from "react-modal";
+import "./styles.css";
 
 class PopUpModal extends React.Component {
   render() {
     const { headerText, bodyText, type, isDanger } = this.props;
     const modal =
-      type === 'Confirmation' ? (
+      type === "Confirmation" ? (
         <div>
           <div className="popUpModal-topic">{headerText}</div>
           <hr className="popUpModal-line" />
           <div>{bodyText}</div>
           <div className="popUpModal-button-container">
             <button
-              className={'popUpModal-confirm' + (isDanger ? '-danger' : '')}
+              className={"popUpModal-confirm" + (isDanger ? "-danger" : "")}
               onClick={() => {
                 this.props.onConfirm();
                 this.props.onCloseModal();
@@ -53,7 +53,7 @@ class PopUpModal extends React.Component {
         className="modal-container-popUpModal"
         style={{
           overlay: {
-            overflow: 'auto'
+            overflow: "auto"
           }
         }}
         isOpen={this.props.isOpen}

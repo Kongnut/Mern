@@ -18,14 +18,34 @@
 }
 
 .tourInfo-edit-btn {
-  width: 100px;
+  margin-right: 20px;
+  width: 125px;
   background-color: #26abdc;
   border-color: #26abdc;
+  color: #fff;
+}
+
+.tourInfo-edit-btn:hover {
+  background-color: #2297c7;
+  border-color: #2297c7;
+}
+
+.tourInfo-danger-btn {
+  width: 125px;
+  color: #fff;
+  background-color: #ec424b;
+  border-color: #ec424b;
+}
+
+.tourInfo-danger-btn:hover {
+  background-color: #cc0000;
+  border-color: #cc0000;
 }
 
 .tourInfo-user-container {
   margin-left: auto;
   margin-top: auto;
+  float: right;
 }
 
 .tourInfo-review {
@@ -82,7 +102,6 @@
 }
 
 .tourInfo-info-header {
-  /* margin-bottom: 10px; */
   line-height: 30px;
   font-size: 22px;
   font-weight: 600;
@@ -111,6 +130,7 @@
 .tourInfo-info-item {
   margin-left: 15px;
   font-size: 16px;
+  word-break: break-all;
 }
 
 .tourInfo-info-price-container {
@@ -118,39 +138,13 @@
   font-size: 20px;
 }
 
-.tourInfo-booking-submit {
-  width: 100%;
-  margin-top: 10px;
-  border: solid 1px #26abdc;
-  background-color: #26abdc;
-  color: white;
-  border-radius: 0.28571429rem;
-  height: 35px;
-}
-
-.tourInfo-booking-submit-disabled {
-  width: 100%;
-  margin-top: 10px;
-  border: solid 1px #cccccc;
-  background-color: #cccccc;
-  color: white;
-  border-radius: 0.28571429rem;
-  height: 35px;
-}
-
-.tourInfo-booking-submit:hover {
-  border: solid 1px #2297c7;
-  background-color: #2297c7;
-}
-
-.tourInfo-stars {
-  padding: 10px 0px 0px 10px;
-}
-
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 500px) {
   .tourInfo-info-container {
+    max-width: 233px;
     margin-top: 30px;
     width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
   .tourInfo-detail {
     width: 100%;
@@ -160,5 +154,19 @@
   .tourInfo-detail-container {
     display: block;
     width: 100%;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .tourInfo-info-header {
+    font-size: 16px;
+  }
+
+  .tourInfo-info-header-item {
+    font-size: 16px;
+  }
+
+  .tourinfo-info-item {
+    font-size: 14px;
   }
 }

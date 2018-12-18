@@ -15,6 +15,7 @@ router.post("/publishTour", async (req, res) => {
     const db: Db = res.locals.db;
     const { tour } = req.body;
     tour.tourId = uuid();
+    tour.isPublished = true;
     const tours = await publishTourService(
       saveTour(db),
       updatePublishedTourOfUser(db)

@@ -16,31 +16,17 @@ export function onSearch(keyword, isTour) {
   return async dispatch => {
     try {
       if (isTour) {
-        if (keyword === "") {
-          const res = await axios
-            .get("http://" + API_ENDPOINT + "/user/searchTours", {
-              keyword
-            })
-            .then(res => {
-              return res.data;
-            });
-          return dispatch({
-            type: ON_SEARCH_TOUR,
-            payload: res
+        const res = await axios
+          .post("http://" + API_ENDPOINT + "/user/searchTour", {
+            keyword
+          })
+          .then(res => {
+            return res.data;
           });
-        } else {
-          const res = await axios
-            .post("http://" + API_ENDPOINT + "/user/searchTour", {
-              keyword
-            })
-            .then(res => {
-              return res.data;
-            });
-          return dispatch({
-            type: ON_SEARCH_TOUR,
-            payload: res
-          });
-        }
+        return dispatch({
+          type: ON_SEARCH_TOUR,
+          payload: res
+        });
       } else {
         const res = await axios
           .post("http://" + API_ENDPOINT + "/user/searchUser", { keyword })

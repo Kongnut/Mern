@@ -38,23 +38,18 @@ export function validateInstagram(url) {
 }
 
 export function validateMinimumSize(minimumSize) {
-  let regex = new RegExp("^($|)([1-9]d{0,2}(,d{3})*|([1-9]d*))(.d{2})?$");
-  let passed = minimumSize.match(regex);
-  if (passed == null || minimumSize.length > 50 || isNaN(minimumSize)) {
+  if (isNaN(minimumSize) || parseInt(minimumSize) >= 20) {
     return "minimum group size must be number which less than 20";
   }
   return false;
 }
 
 export function validateMaximumSize(maximumSize, minimumSize = 0) {
-  let regex = new RegExp("^($|)([1-9]d{0,2}(,d{3})*|([1-9]d*))(.d{2})?$");
-  let passed = maximumSize.match(regex);
   if (
-    passed == null ||
-    maximumSize.length > 50 ||
     isNaN(minimumSize) ||
     isNaN(maximumSize) ||
-    parseInt(minimumSize) > parseInt(maximumSize)
+    parseInt(minimumSize) > parseInt(maximumSize) ||
+    parseInt(maximumSize) <= 10
   ) {
     return "maximum group size must be number which more than minimum size and more than 10";
   }
@@ -62,9 +57,7 @@ export function validateMaximumSize(maximumSize, minimumSize = 0) {
 }
 
 export function validatePrice(price) {
-  let regex = "^($|)([1-9]d{0,2}(,d{3})*|([1-9]d*))(.d{2})?$";
-  let passed = price.match(regex);
-  if (passed == null || price > 30000 || isNaN(price)) {
+  if (isNaN(price) || parseInt(price) > 30000) {
     return "price must be number and not exceed 30000";
   }
   return false;

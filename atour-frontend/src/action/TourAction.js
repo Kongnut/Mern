@@ -37,9 +37,50 @@ export function editTour(tour, token) {
         .then(res => {
           return res.data;
         });
+      const {
+        detail,
+        imageUrl,
+        isPublished,
+        maximumSize,
+        minimumSize,
+        price,
+        tourId,
+        tourName,
+        userId
+      } = res;
       return dispatch({
         type: EDIT_TOUR,
-        payload: res
+        payload: {
+          detail,
+          imageUrl,
+          isPublished,
+          maximumSize,
+          minimumSize,
+          price,
+          tourId,
+          tourName,
+          userId
+        }
+      });
+    } catch (e) {}
+  };
+}
+
+export const DELETED = "DELETED";
+export function deleted() {
+  return { type: DELETED };
+}
+
+export const DELETE_TOUR = "DELETE_TOUR";
+export function deleteTour(tour, token) {
+  return async dispatch => {
+    try {
+      await axios.post("http://" + API_ENDPOINT + "/tour/deleteTour", {
+        tour,
+        token
+      });
+      return dispatch({
+        type: DELETE_TOUR
       });
     } catch (e) {
       console.log(e);

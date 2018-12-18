@@ -1,10 +1,11 @@
 import { combineReducers } from "redux";
 import { SELECT_TOUR } from "../action/SelectAction";
 import { ON_SEARCH_TOUR } from "../action/SearchAction";
-import { EDIT_TOUR } from "../action/TourAction";
+import { EDIT_TOUR, DELETE_TOUR, DELETED } from "../action/TourAction";
 import { GET_OTHER_USER_INFO } from "../action/UserInfoAction";
 const initialState = {
   tourList: [],
+  isDeleted: false,
   selectedTour: {
     tourName: "",
     tourimage: "",
@@ -41,6 +42,17 @@ function tourList(state = initialState.tourList, action) {
   }
 }
 
+function isDeleted(state = initialState.isDeleted, action) {
+  switch (action.type) {
+    case DELETE_TOUR:
+      return true;
+    case DELETED:
+      return false;
+    default:
+      return state;
+  }
+}
+
 function selectedTour(state = initialState.selectedTour, action) {
   switch (action.type) {
     case EDIT_TOUR:
@@ -51,5 +63,10 @@ function selectedTour(state = initialState.selectedTour, action) {
   }
 }
 
-const reducer = combineReducers({ tourList, selectedTour, otherUserInfo });
+const reducer = combineReducers({
+  isDeleted,
+  tourList,
+  selectedTour,
+  otherUserInfo
+});
 export default reducer;

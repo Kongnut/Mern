@@ -4,11 +4,12 @@ import "./styles.css";
 import autobind from "react-autobind";
 import { Redirect } from "react-router-dom";
 import { getOtherUserInfo } from "../../action/UserInfoAction";
+import { editTour, deleteTour, deleted } from "../../action/TourAction";
 import { selectUser } from "../../action/SelectAction";
 import tourImage from "../../image/TourImage.png";
-import { Parallax } from "react-parallax";
 import EditTourModal from "../EditTourModal/EditTourModal";
 import { editTourModal } from "../../action/ModalAction";
+import PopUpModal from "../PopUpModal/PopUpModal";
 
 class TourInfo extends React.Component {
   constructor() {
@@ -16,7 +17,14 @@ class TourInfo extends React.Component {
     window.scrollTo(0, 0);
     this.state = {
       redirect: false,
-      start: true
+      start: true,
+      confirmationModal: false,
+      confirmationOnclick: () => null,
+      isDeleted: false,
+      confirmHeader: "",
+      confirmMessage: "",
+      isDanger: false,
+      to: "/"
     };
     autobind(this);
   }
@@ -33,11 +41,88 @@ class TourInfo extends React.Component {
       });
       this.props.getOtherUserInfo(nextProps.tourInfo.userId);
     }
+    if (nextProps.isDeleted) {
+      this.props.deleted();
+      this.setState({ isDeleted: true });
+    }
+  }
+
+  tourConfigButton() {
+    const {
+      screenWidth,
+      tourInfo,
+      user: { token }
+    } = this.props;
+    const buttonContainerStyle = screenWidth <= 800 ? { width: "125px" } : null;
+    return this.props.tourInfo.isPublished ? (
+      <div style={buttonContainerStyle}>
+        <button
+          onClick={() => {
+            this.props.onClickEditTour(tourInfo, token);
+          }}
+          className="btn tourInfo-edit-btn"
+        >
+          Edit Tour
+        </button>
+        <button
+          onClick={() => {
+            this.setState({
+              confirmationModal: true,
+              isDanger: true,
+              confirmHeader: "Unpublish this tour ?",
+              confirmMessage:
+                "This tour will be unpublished.Other user will not able to search for this tour. It will not be deleted you can republish it at anytime",
+              confirmationOnclick: () =>
+                this.props.onClickUnpublishTour(tourInfo, token)
+            });
+          }}
+          className="btn tourInfo-danger-btn"
+        >
+          Unpublish Tour
+        </button>
+      </div>
+    ) : (
+      <div style={buttonContainerStyle}>
+        <button
+          onClick={() => {
+            this.setState({
+              confirmationModal: true,
+              isDange: false,
+              confirmHeader: "Republish this tour ?",
+              confirmMessage:
+                "This tour will be republished. Other user will able to search for this tour",
+              confirmationOnclick: () =>
+                this.props.onClickRepublishTour(tourInfo, token)
+            });
+          }}
+          className="btn tourInfo-edit-btn"
+        >
+          Republish Tour
+        </button>
+        <button
+          onClick={() => {
+            this.setState({
+              confirmationModal: true,
+              isDanger: true,
+              confirmHeader: "Delete this tour ?",
+              confirmMessage:
+                "This tour will be deleted. It is unable to recover after delete.",
+              confirmationOnclick: () => {
+                this.props.onClickDeleteTour(tourInfo, token);
+              }
+            });
+          }}
+          className="btn tourInfo-danger-btn"
+        >
+          Delete Tour
+        </button>
+      </div>
+    );
   }
 
   render() {
-    if (!this.props.tourInfo.tourName) {
-      return <Redirect to="/" />;
+    if (!this.props.tourInfo.tourName || this.state.redirect) {
+      return <Redirect to={this.state.to} />;
     }
     const {
       tourName,
@@ -46,22 +131,14 @@ class TourInfo extends React.Component {
       maximumSize,
       minimumSize
     } = this.props.tourInfo;
-    if (this.state.redirect) {
-      return <Redirect to="/viewProfile" />;
-    }
     const infoOrEdit =
       this.props.tourInfo.userId === this.props.user.userId ? (
-        <button
-          onClick={() => this.props.onClickEditTour()}
-          className="btn btn-primary tourInfo-edit-btn"
-        >
-          Edit Tour
-        </button>
+        this.tourConfigButton()
       ) : (
         <div
           onClick={() => {
             this.props.selectUser(this.props.otherUserInfo);
-            this.setState({ redirect: true });
+            this.setState({ redirect: true, to: "/viewProfile" });
           }}
           className="tourInfo-userName"
         >
@@ -69,11 +146,32 @@ class TourInfo extends React.Component {
           {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ""}
         </div>
       );
+    const { screenWidth } = this.props;
+    const imageHeight =
+      screenWidth >= 950 ? "400px" : (screenWidth / 950) * 400 + "px";
     return (
       <div>
         <EditTourModal />
+        <PopUpModal
+          isOpen={this.state.isDeleted}
+          onCloseModal={() => this.setState({ redirect: true })}
+          headerText={this.props.tourInfo.tourName + " is deleted"}
+          bodyText="You will be redirected to Home page"
+        />
+        <PopUpModal
+          isOpen={this.state.confirmationModal}
+          onConfirm={() => {
+            this.state.confirmationOnclick();
+          }}
+          onCloseModal={() => {
+            this.setState({ confirmationModal: false });
+          }}
+          type="Confirmation"
+          isDanger={this.state.isDanger}
+          headerText={this.state.confirmHeader}
+          bodyText={this.state.confirmMessage}
+        />
         <div style={{ marginBottom: "100px" }}>
-          {/* <img src={tourImage} className="tourInfo-image" alt="" /> */}
           <div className="tourInfo-container">
             <div className="tourInfo-above-divider">
               <div className="tourInfo-header">
@@ -82,15 +180,14 @@ class TourInfo extends React.Component {
               <div className="tourInfo-user-container">{infoOrEdit}</div>
             </div>
             <hr className="tourInfo-divider" />
-            <Parallax
-              bgImage={
-                this.props.tourInfo.imageUrl === null
-                  ? tourImage
-                  : this.props.tourInfo.imageUrl
-              }
-              bgImageAlt="the cat"
-              strength={300}
-              style={{ width: "100%", height: "400px", marginBottom: "50px" }}
+            <img
+              style={{
+                width: "100%",
+                height: screenWidth * 0.8 * 0.67 + "px",
+                marginBottom: "50px"
+              }}
+              alt="tour"
+              src={this.props.tourInfo.imageUrl || tourImage}
             />
             <div className="tourInfo-detail-container">
               <div className="tourInfo-detail">{detail}</div>
@@ -147,16 +244,30 @@ class TourInfo extends React.Component {
 const mapStateToProps = state => {
   return {
     tourInfo: state.tour.selectedTour,
+    isDeleted: state.tour.isDeleted,
     otherUserInfo: state.tour.otherUserInfo,
-    user: state.user
+    user: state.user,
+    screenWidth: state.app.width
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   selectUser: user => dispatch(selectUser(user)),
+  deleted: () => dispatch(deleted()),
   getOtherUserInfo: userId => dispatch(getOtherUserInfo(userId)),
   onClickEditTour: () => {
     dispatch(editTourModal(true));
+  },
+  onClickUnpublishTour: (tour, token) => {
+    tour.isPublished = false;
+    dispatch(editTour(tour, token));
+  },
+  onClickRepublishTour: (tour, token) => {
+    tour.isPublished = true;
+    dispatch(editTour(tour, token));
+  },
+  onClickDeleteTour: (tour, token) => {
+    dispatch(deleteTour(tour, token));
   }
 });
 

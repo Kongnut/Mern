@@ -39,6 +39,8 @@ function gender(state = initialState.gender, action) {
     case GET_USER_INFO:
     case LOGIN_SUCCESS:
       return action.payload.userInfo.gender;
+    case LOGOUT:
+      return "";
     default:
       return state;
   }
@@ -49,6 +51,8 @@ function age(state = initialState.age, action) {
     case GET_USER_INFO:
     case LOGIN_SUCCESS:
       return action.payload.userInfo.age;
+    case LOGOUT:
+      return "";
     default:
       return state;
   }
@@ -60,6 +64,8 @@ function facebookUrl(state = initialState.facebookUrl, action) {
     case GET_USER_INFO:
     case LOGIN_SUCCESS:
       return action.payload.userInfo.facebookUrl || "";
+    case LOGOUT:
+      return "";
     default:
       return state;
   }
@@ -71,6 +77,8 @@ function instagramUrl(state = initialState.instagramUrl, action) {
     case GET_USER_INFO:
     case LOGIN_SUCCESS:
       return action.payload.userInfo.instagramUrl || "";
+    case LOGOUT:
+      return "";
     default:
       return state;
   }
@@ -82,6 +90,8 @@ function phoneNumber(state = initialState.phoneNumber, action) {
     case GET_USER_INFO:
     case LOGIN_SUCCESS:
       return action.payload.userInfo.phoneNumber || "";
+    case LOGOUT:
+      return "";
     default:
       return state;
   }
@@ -91,6 +101,8 @@ function userId(state = initialState.userId, action) {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return action.payload.userInfo.userId;
+    case LOGOUT:
+      return "";
     default:
       return state;
   }

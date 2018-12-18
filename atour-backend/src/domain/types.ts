@@ -7,9 +7,15 @@ export type Tour = {
   detail: string;
   userId: string;
   imageUrl: string | null;
+  isPublished: boolean;
 };
 
 export type Gender = "Male" | "Female";
+
+export type UserSaveTour = {
+  userId: string;
+  tour: Tour;
+};
 
 export type User = {
   userId: string;

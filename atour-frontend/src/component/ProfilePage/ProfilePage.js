@@ -108,7 +108,11 @@ class Profile extends React.Component {
 
   render() {
     const { isView } = this.state;
-    if (!isView && !this.props.ownUser.firstName) return <Redirect to="/" />;
+    if (
+      this.props.location.pathname !== "/viewProfile" &&
+      !this.props.ownUser.firstName
+    )
+      return <Redirect to="/" />;
     const {
       firstName,
       lastName,
