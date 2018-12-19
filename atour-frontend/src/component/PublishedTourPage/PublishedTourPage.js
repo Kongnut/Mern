@@ -48,6 +48,7 @@ class PublishedTourPage extends React.Component {
             <Cards
               savedTourList={[]}
               isUser={false}
+              isOwn
               items={this.props.user.publishedTour}
             />
           )}

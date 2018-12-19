@@ -3,13 +3,16 @@ import { Flex } from "rebass";
 import CardItem from "./CardItem";
 
 const Cards = props => {
-  const { isUser, items, savedTourList } = props;
+  const { isUser, items, savedTourList, isOwn } = props;
   let sorted = items;
   if (!isUser) {
     if (items) {
-      let tour = items.filter(t => {
-        return t.isPublished;
-      });
+      let tour = items;
+      if (!isOwn) {
+        tour = tour.filter(t => {
+          return t.isPublished;
+        });
+      }
       tour = tour.map(t => {
         if (savedTourList.includes(t.tourId)) {
           return { ...t, isSaved: true };

@@ -18,7 +18,7 @@ export function onSearch(keyword, isTour) {
       if (isTour) {
         const res = await axios
           .post("http://" + API_ENDPOINT + "/user/searchTour", {
-            keyword
+            keyword: keyword || ""
           })
           .then(res => {
             return res.data;
@@ -29,7 +29,9 @@ export function onSearch(keyword, isTour) {
         });
       } else {
         const res = await axios
-          .post("http://" + API_ENDPOINT + "/user/searchUser", { keyword })
+          .post("http://" + API_ENDPOINT + "/user/searchUser", {
+            keyword: keyword || ""
+          })
           .then(res => {
             return res.data;
           });
