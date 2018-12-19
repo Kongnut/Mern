@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { FACEBOOK_KEY } from "../../utils/utils";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-import "./styles.css";
-import { Link } from "react-router-dom";
-import { logout, resizeWindow, login } from "../../action/ApplicationAction";
-import logo from "../../image/Atour-logo.jpg";
-import autobind from "react-autobind";
-import SideMenu from "../SideMenu/SideMenu";
-import ClickOutSide from "react-click-outside-component";
-import PopUpModal from "../../component/PopUpModal/PopUpModal";
-import { getSavedTour } from "../../action/UserInfoAction";
+import React from 'react';
+import { connect } from 'react-redux';
+import { FACEBOOK_KEY } from '../../utils/utils';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import './styles.css';
+import { Link } from 'react-router-dom';
+import { logout, resizeWindow, login } from '../../action/ApplicationAction';
+import logo from '../../image/Atour-logo.jpg';
+import autobind from 'react-autobind';
+import SideMenu from '../SideMenu/SideMenu';
+import ClickOutSide from 'react-click-outside-component';
+import PopUpModal from '../../component/PopUpModal/PopUpModal';
+import { getSavedTour } from '../../action/UserInfoAction';
 
 class TopBanner extends React.Component {
   constructor(props) {
@@ -18,15 +18,15 @@ class TopBanner extends React.Component {
     this.state = {
       loginError: false,
       isClickedDropdown: false,
-      sideMenuStatus: "hidden",
-      topTransparent: props.transparent
+      sideMenuStatus: 'hidden',
+      topTransparent: props.transparent,
     };
     autobind(this);
   }
 
   componentDidMount() {
     const { resizeWindow } = this.props;
-    document.addEventListener("scroll", this.onScroll);
+    document.addEventListener('scroll', this.onScroll);
     window.onresize = function() {
       resizeWindow(window.innerWidth);
     };
@@ -34,9 +34,9 @@ class TopBanner extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (
-      (this.props.location.pathname === "/" ||
-        this.props.location.pathname === "/searchForTour" ||
-        this.props.location.pathname === "/searchForGuide") &&
+      (this.props.location.pathname === '/' ||
+        this.props.location.pathname === '/searchForTour' ||
+        this.props.location.pathname === '/searchForGuide') &&
       nextProps.isSearched
     ) {
       if (this.props.userInfo && this.props.userInfo.userId)
@@ -49,7 +49,7 @@ class TopBanner extends React.Component {
       this.setState({ isClickedDropdown: false });
     }
     if (nextProps.width > 710) {
-      this.setState({ sideMenuStatus: "hidden" });
+      this.setState({ sideMenuStatus: 'hidden' });
     }
     if (nextProps.transparent !== this.props.transparent) {
       this.setState({ topTransparent: nextProps.transparent });
@@ -57,14 +57,13 @@ class TopBanner extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener("scroll", this.onScroll);
+    document.removeEventListener('scroll', this.onScroll);
   }
 
   onScroll() {
     // This also can change to dispatch transparent action
     // May need to have variable to know which page need transparent
-    const documentBody =
-      document.body.scrollTop || document.documentElement.scrollTop;
+    const documentBody = document.body.scrollTop || document.documentElement.scrollTop;
     if (documentBody > 90 || !this.props.transparent) {
       this.setState({ topTransparent: false });
     } else {
@@ -77,15 +76,14 @@ class TopBanner extends React.Component {
   }
 
   onClickOpenMenu() {
-    const documentBody =
-      document.body.scrollTop || document.documentElement.scrollTop;
+    const documentBody = document.body.scrollTop || document.documentElement.scrollTop;
     const { sideMenuStatus } = this.state;
     let nextStatus;
-    if (sideMenuStatus === "hidden") {
-      nextStatus = "isShowing";
+    if (sideMenuStatus === 'hidden') {
+      nextStatus = 'isShowing';
       this.setState({ topTransparent: false });
-    } else if (sideMenuStatus === "isShowing") {
-      nextStatus = "isHidding";
+    } else if (sideMenuStatus === 'isShowing') {
+      nextStatus = 'isHidding';
       if (documentBody <= 90) {
         this.setState({ topTransparent: true });
       }
@@ -104,10 +102,10 @@ class TopBanner extends React.Component {
       first_name,
       last_name,
       picture: {
-        data: { url }
+        data: { url },
       },
       gender,
-      birthday
+      birthday,
     } = res;
     const userInfo = {
       firstName: first_name,
@@ -115,7 +113,7 @@ class TopBanner extends React.Component {
       profileImageUrl: url,
       userId: res.userID,
       gender,
-      age: new Date().getFullYear() - parseInt(birthday.substring(6, 10))
+      age: new Date().getFullYear() - parseInt(birthday.substring(6, 10)),
     };
     this.props.login(userInfo);
   }
@@ -143,9 +141,7 @@ class TopBanner extends React.Component {
 
   renderSignIn() {
     const dropDown = this.state.isClickedDropdown ? (
-      <ClickOutSide
-        onClickOutside={() => this.setState({ isClickedDropdown: false })}
-      >
+      <ClickOutSide onClickOutside={() => this.setState({ isClickedDropdown: false })}>
         <div className="topbanner-login-dropdown">
           <div>
             <Link to="/editProfile" className="topbanner-link">
@@ -190,7 +186,7 @@ class TopBanner extends React.Component {
           className="topbanner-login-banner"
           onClick={() => this.setState({ isClickedDropdown: true })}
         >
-          <div className="topbanner-atour">Atour</div>
+          <div className="topbanner-atour">Member</div>
           <div className="topbanner-as-firstname">
             {this.props.userInfo.firstName.substring(0, 8)}
           </div>
@@ -218,14 +214,12 @@ class TopBanner extends React.Component {
   }
 
   renderMenu() {
-    const renderSignIn = this.props.userInfo.token
-      ? this.renderSignIn()
-      : this.renderNotSignIn();
+    const renderSignIn = this.props.userInfo.token ? this.renderSignIn() : this.renderNotSignIn();
     return (
       <div className="topbanner-right-container">
         <div className="topbanner-right topbanner-first">
           <Link
-            to={{ pathname: "/searchForTour", state: { isSearch: true } }}
+            to={{ pathname: '/searchForTour', state: { isSearch: true } }}
             className="topbanner-link"
           >
             <div className="topbanner-menu">Search for Tour</div>
@@ -244,15 +238,14 @@ class TopBanner extends React.Component {
   render() {
     const { sideMenuStatus, topTransparent, loginError } = this.state;
     const path = this.props.location.pathname;
-    const renderMenu =
-      this.props.width <= 710 ? this.renderSideMenuButton() : this.renderMenu();
+    const renderMenu = this.props.width <= 710 ? this.renderSideMenuButton() : this.renderMenu();
     return (
       <div>
         <PopUpModal
           isOpen={loginError ? true : false}
           onCloseModal={() => this.setState({ loginError: false })}
-          headerText={"Login Fail"}
-          bodyText={"Facebook Auth error"}
+          headerText={'Login Fail'}
+          bodyText={'Facebook Auth error'}
         />
         <div className="topbanner">
           <SideMenu
@@ -260,26 +253,18 @@ class TopBanner extends React.Component {
             setSideMenuStatus={this.setSideMenuStatus}
             path={path}
           />
-          <div
-            className={`topbanner-banner${
-              topTransparent ? "--transparent" : ""
-            }`}
-          >
+          <div className={`topbanner-banner${topTransparent ? '--transparent' : ''}`}>
             <div className="topbanner-logo-container">
               <div className="topbanner-logo">
                 <Link to="/">
-                  <img
-                    className="topbanner-logo-img"
-                    src={logo}
-                    alt="topbanner-logo"
-                  />
+                  <img className="topbanner-logo-img" src={logo} alt="topbanner-logo" />
                 </Link>
               </div>
             </div>
             {renderMenu}
           </div>
         </div>
-        <div style={{ height: "50px" }} />
+        <div style={{ height: '50px' }} />
       </div>
     );
   }
@@ -288,14 +273,14 @@ class TopBanner extends React.Component {
 const mapStateToProps = state => ({
   userInfo: state.user,
   width: state.app.width,
-  isSearched: state.search.isSearched
+  isSearched: state.search.isSearched,
 });
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
   login: userInfo => dispatch(login(userInfo)),
   resizeWindow: width => dispatch(resizeWindow(width)),
-  getSavedTour: userId => dispatch(getSavedTour(userId))
+  getSavedTour: userId => dispatch(getSavedTour(userId)),
 });
 
 export default connect(

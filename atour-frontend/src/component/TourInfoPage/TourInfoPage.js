@@ -1,15 +1,15 @@
-import React from "react";
-import { connect } from "react-redux";
-import "./styles.css";
-import autobind from "react-autobind";
-import { Redirect } from "react-router-dom";
-import { getOtherUserInfo, saveTour } from "../../action/UserInfoAction";
-import { editTour, deleteTour, deleted } from "../../action/TourAction";
-import { selectUser } from "../../action/SelectAction";
-import tourImage from "../../image/TourImage.png";
-import EditTourModal from "../EditTourModal/EditTourModal";
-import { editTourModal } from "../../action/ModalAction";
-import PopUpModal from "../PopUpModal/PopUpModal";
+import React from 'react';
+import { connect } from 'react-redux';
+import './styles.css';
+import autobind from 'react-autobind';
+import { Redirect } from 'react-router-dom';
+import { getOtherUserInfo, saveTour } from '../../action/UserInfoAction';
+import { editTour, deleteTour, deleted } from '../../action/TourAction';
+import { selectUser } from '../../action/SelectAction';
+import tourImage from '../../image/TourImage.png';
+import EditTourModal from '../EditTourModal/EditTourModal';
+import { editTourModal } from '../../action/ModalAction';
+import PopUpModal from '../PopUpModal/PopUpModal';
 
 class TourInfo extends React.Component {
   constructor() {
@@ -21,10 +21,10 @@ class TourInfo extends React.Component {
       confirmationModal: false,
       confirmationOnclick: () => null,
       isDeleted: false,
-      confirmHeader: "",
-      confirmMessage: "",
+      confirmHeader: '',
+      confirmMessage: '',
       isDanger: false,
-      to: "/"
+      to: '/',
     };
     autobind(this);
   }
@@ -37,7 +37,7 @@ class TourInfo extends React.Component {
     if (this.state.start && nextProps.tourInfo.userId) {
       this.setState({
         groupSize: nextProps.tourInfo.minimumSize,
-        start: false
+        start: false,
       });
       this.props.getOtherUserInfo(nextProps.tourInfo.userId);
     }
@@ -51,9 +51,9 @@ class TourInfo extends React.Component {
     const {
       screenWidth,
       tourInfo,
-      user: { token }
+      user: { token },
     } = this.props;
-    const buttonContainerStyle = screenWidth <= 800 ? { width: "125px" } : null;
+    const buttonContainerStyle = screenWidth <= 800 ? { width: '125px' } : null;
     return this.props.tourInfo.isPublished ? (
       <div style={buttonContainerStyle}>
         <button
@@ -69,11 +69,10 @@ class TourInfo extends React.Component {
             this.setState({
               confirmationModal: true,
               isDanger: true,
-              confirmHeader: "Unpublish this tour ?",
+              confirmHeader: 'Unpublish this tour ?',
               confirmMessage:
-                "This tour will be unpublished.Other user will not able to search for this tour. It will not be deleted you can republish it at anytime",
-              confirmationOnclick: () =>
-                this.props.onClickUnpublishTour(tourInfo, token)
+                'This tour will be unpublished.Other user will not able to search for this tour. It will not be deleted you can republish it at anytime',
+              confirmationOnclick: () => this.props.onClickUnpublishTour(tourInfo, token),
             });
           }}
           className="btn tourInfo-danger-btn"
@@ -88,11 +87,10 @@ class TourInfo extends React.Component {
             this.setState({
               confirmationModal: true,
               isDange: false,
-              confirmHeader: "Republish this tour ?",
+              confirmHeader: 'Republish this tour ?',
               confirmMessage:
-                "This tour will be republished. Other user will able to search for this tour",
-              confirmationOnclick: () =>
-                this.props.onClickRepublishTour(tourInfo, token)
+                'This tour will be republished. Other user will able to search for this tour',
+              confirmationOnclick: () => this.props.onClickRepublishTour(tourInfo, token),
             });
           }}
           className="btn tourInfo-edit-btn"
@@ -104,12 +102,11 @@ class TourInfo extends React.Component {
             this.setState({
               confirmationModal: true,
               isDanger: true,
-              confirmHeader: "Delete this tour ?",
-              confirmMessage:
-                "This tour will be deleted. It is unable to recover after delete.",
+              confirmHeader: 'Delete this tour ?',
+              confirmMessage: 'This tour will be deleted. It is unable to recover after delete.',
               confirmationOnclick: () => {
                 this.props.onClickDeleteTour(tourInfo, token);
-              }
+              },
             });
           }}
           className="btn tourInfo-danger-btn"
@@ -133,14 +130,7 @@ class TourInfo extends React.Component {
     if (!this.props.tourInfo.tourName || this.state.redirect) {
       return <Redirect to={this.state.to} />;
     }
-    const {
-      tourName,
-      price,
-      detail,
-      maximumSize,
-      minimumSize,
-      tourId
-    } = this.props.tourInfo;
+    const { tourName, price, detail, maximumSize, minimumSize, tourId } = this.props.tourInfo;
     const isSaved = this.isSaved();
     const infoOrEdit =
       this.props.tourInfo.userId === this.props.user.userId ? (
@@ -149,26 +139,21 @@ class TourInfo extends React.Component {
         <div className="tourInfo-save-user-container">
           {this.props.user.userId && (
             <button
-              onClick={() =>
-                this.props.saveTour(this.props.user.userId, tourId)
-              }
-              className={"btn tourInfo-" + (!isSaved ? "save" : "unsave")}
+              onClick={() => this.props.saveTour(this.props.user.userId, tourId)}
+              className={'btn tourInfo-' + (!isSaved ? 'save' : 'unsave')}
             >
-              <i
-                className={"fa fa-" + (!isSaved ? "plus" : "minus") + "-circle"}
-              />{" "}
-              {!isSaved ? "Save" : "UnSave"}
+              <i className={'fa fa-' + (!isSaved ? 'plus' : 'minus') + '-circle'} />{' '}
+              {!isSaved ? 'Save' : 'UnSave'}
             </button>
           )}
           <div
             onClick={() => {
               this.props.selectUser(this.props.otherUserInfo);
-              this.setState({ redirect: true, to: "/viewProfile" });
+              this.setState({ redirect: true, to: '/viewProfile' });
             }}
             className="tourInfo-userName"
           >
-            by{" "}
-            {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ""}
+            by {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ''}
           </div>
         </div>
       );
@@ -179,7 +164,7 @@ class TourInfo extends React.Component {
         <PopUpModal
           isOpen={this.state.isDeleted}
           onCloseModal={() => this.setState({ redirect: true })}
-          headerText={this.props.tourInfo.tourName + " is deleted"}
+          headerText={this.props.tourInfo.tourName + ' is deleted'}
           bodyText="You will be redirected to Home page"
         />
         <PopUpModal
@@ -195,7 +180,7 @@ class TourInfo extends React.Component {
           headerText={this.state.confirmHeader}
           bodyText={this.state.confirmMessage}
         />
-        <div style={{ marginBottom: "100px" }}>
+        <div style={{ marginBottom: '100px' }}>
           <div className="tourInfo-container">
             <div className="tourInfo-above-divider">
               <div className="tourInfo-header">
@@ -206,9 +191,9 @@ class TourInfo extends React.Component {
             <hr className="tourInfo-divider" />
             <img
               style={{
-                width: "100%",
-                height: screenWidth * 0.8 * 0.67 + "px",
-                marginBottom: "50px"
+                width: '100%',
+                height: screenWidth * 0.8 * 0.67 + 'px',
+                marginBottom: '50px',
               }}
               alt="tour"
               src={this.props.tourInfo.imageUrl || tourImage}
@@ -217,49 +202,46 @@ class TourInfo extends React.Component {
               <div className="tourInfo-detail">{detail}</div>
 
               <div className="tourInfo-info-container">
-                <div className="tourInfo-info-header">
-                  Tour Info and User Contact
-                </div>
+                <div className="tourInfo-info-header">Tour Info and User Contact</div>
                 <hr />
                 <div className="tourInfo-info-header-item"> Group size</div>
-                <div className="tourInfo-info-item">
-                  {`${minimumSize} - ${maximumSize}`}
-                </div>
+                <div className="tourInfo-info-item">{`${minimumSize} - ${maximumSize}`}</div>
                 <div className="tourInfo-info-header-item">Price</div>
                 <div className="tourInfo-info-price-container">
                   <div className="tourInfo-info-item">{price} bath</div>
                 </div>
+                <div style={{ marginTop: '30px' }} />
+                <div className="tourInfo-info-header-item"> Guide Name</div>
+                <div className="tourInfo-info-item">
+                  {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ''}
+                </div>
                 <div className="tourInfo-info-header-item">Phone Number</div>
                 <div className="tourInfo-info-item">
-                  {this.props.otherUserInfo
-                    ? this.props.otherUserInfo.phoneNumber || "-"
-                    : "-"}
+                  {this.props.otherUserInfo ? this.props.otherUserInfo.phoneNumber || '-' : '-'}
                 </div>
 
-                {this.props.otherUserInfo &&
-                  this.props.otherUserInfo.facebookUrl && (
-                    <a
-                      href={this.props.otherUserInfo.facebookUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <i className="fa fa-facebook-square tourInfo-info-facebook" />
-                    </a>
-                  )}
-                {this.props.otherUserInfo &&
-                  this.props.otherUserInfo.instagramUrl && (
-                    <a
-                      href={this.props.otherUserInfo.instagramUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <i className="fa fa-instagram tourInfo-info-instagram" />
-                    </a>
-                  )}
+                {this.props.otherUserInfo && this.props.otherUserInfo.facebookUrl && (
+                  <a
+                    href={this.props.otherUserInfo.facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="fa fa-facebook-square tourInfo-info-facebook" />
+                  </a>
+                )}
+                {this.props.otherUserInfo && this.props.otherUserInfo.instagramUrl && (
+                  <a
+                    href={this.props.otherUserInfo.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="fa fa-instagram tourInfo-info-instagram" />
+                  </a>
+                )}
               </div>
             </div>
           </div>
-        </div>{" "}
+        </div>
       </div>
     );
   }
@@ -272,7 +254,7 @@ const mapStateToProps = state => {
     otherUserInfo: state.tour.otherUserInfo,
     user: state.user,
     savedTour: state.user.savedTourList,
-    screenWidth: state.app.width
+    screenWidth: state.app.width,
   };
 };
 
@@ -296,7 +278,7 @@ const mapDispatchToProps = dispatch => ({
   },
   saveTour: (userId, tourId) => {
     dispatch(saveTour(userId, tourId));
-  }
+  },
 });
 
 export default connect(

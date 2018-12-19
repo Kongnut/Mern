@@ -1,28 +1,26 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { Card, Image } from "semantic-ui-react";
-import { selectTour, selectUser } from "../../action/SelectAction";
-import "./styles.css";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { Card, Image } from 'semantic-ui-react';
+import { selectTour, selectUser } from '../../action/SelectAction';
+import './styles.css';
 
 class CardItem extends React.Component {
   constructor() {
     super();
-    this.state = { redirect: false, to: "/" };
+    this.state = { redirect: false, to: '/' };
   }
   filterString(string, threshold) {
-    return (
-      string.substring(0, threshold) + (string.length > threshold ? "..." : "")
-    );
+    return string.substring(0, threshold) + (string.length > threshold ? '...' : '');
   }
   render() {
     if (this.state.redirect) return <Redirect to={this.state.to} />;
     if (!this.props.isUser) {
       return (
         <Card
-          style={{ height: "480px" }}
+          style={{ height: '380px' }}
           onClick={() => {
-            this.setState({ redirect: true, to: "/tourInfo" });
+            this.setState({ redirect: true, to: '/tourInfo' });
             this.props.selectTour(this.props.item);
           }}
         >
@@ -32,26 +30,20 @@ class CardItem extends React.Component {
               size="medium"
               src={
                 this.props.item.imageUrl == null
-                  ? require("../../image/TourImage.png")
+                  ? require('../../image/TourImage.png')
                   : this.props.item.imageUrl
               }
-              style={{ height: "200px" }}
+              style={{ height: '200px' }}
             />
-            <Card.Header>
-              {this.filterString(this.props.item.tourName, 30)}
-            </Card.Header>
-            <Card.Meta>{this.props.item.price + " baht"}</Card.Meta>
-            <Card.Description
-              style={{ height: "140px", wordBreak: "break-all" }}
-            >
+            <Card.Header>{this.filterString(this.props.item.tourName, 30)}</Card.Header>
+            <Card.Meta>{this.props.item.price + ' baht'}</Card.Meta>
+            <Card.Description style={{ height: '80px', wordBreak: 'break-all' }}>
               {this.filterString(this.props.item.detail, 100)}
             </Card.Description>
             {this.props.item.isSaved && (
               <div>
-                <hr style={{ marginBottom: "11px" }} />
-                <Card.Description
-                  style={{ textAlign: "center", color: "#26abdc" }}
-                >
+                <hr style={{ marginBottom: '11px' }} />
+                <Card.Description style={{ textAlign: 'center', color: '#26abdc' }}>
                   Saved
                 </Card.Description>
               </div>
@@ -62,29 +54,24 @@ class CardItem extends React.Component {
     } else {
       const {
         item: { firstName, lastName, gender, profileImageUrl, age },
-        item
+        item,
       } = this.props;
       return (
         <Card
-          style={{ height: "380px" }}
+          style={{ height: '380px' }}
           onClick={() => {
-            this.setState({ redirect: true, to: "/viewProfile" });
+            this.setState({ redirect: true, to: '/viewProfile' });
             this.props.selectUser(item);
           }}
         >
           <Image
-            src={profileImageUrl || require("../../image/TourImage.png")}
-            style={{ height: "250px" }}
+            src={profileImageUrl || require('../../image/TourImage.png')}
+            style={{ height: '250px' }}
           />
           <Card.Content>
-            <Card.Header>
-              {" "}
-              {"Full Name: " + firstName + " " + lastName}
-            </Card.Header>
-            <Card.Content style={{ marginTop: "10px" }}>
-              {"Age: " + age}
-            </Card.Content>
-            <Card.Content> {"Gender: " + gender}</Card.Content>
+            <Card.Header> {firstName + ' ' + lastName}</Card.Header>
+            <Card.Content style={{ marginTop: '10px' }}>{'Age: ' + age}</Card.Content>
+            <Card.Content> {'Gender: ' + gender}</Card.Content>
           </Card.Content>
         </Card>
       );
@@ -94,12 +81,12 @@ class CardItem extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    savedTour: state.user.savedTourList
+    savedTour: state.user.savedTourList,
   };
 };
 const mapDispatchToProps = dispatch => ({
   selectTour: tour => dispatch(selectTour(tour)),
-  selectUser: user => dispatch(selectUser(user))
+  selectUser: user => dispatch(selectUser(user)),
 });
 
 export default connect(
