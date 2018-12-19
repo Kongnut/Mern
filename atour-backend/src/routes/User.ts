@@ -95,8 +95,9 @@ router.post("/searchUser", async (req, res) => {
 router.post("/saveTour", async (req, res) => {
   try {
     const db: Db = res.locals.db;
-    const { userId, tour } = req.body;
-    const results = await saveTourService(saveTour(db))(userId, tour);
+    const { userId, tourId } = req.body;
+    const tours = await saveTourService(saveTour(db))(userId, tourId);
+    const results = mapToTourId(tours);
     res.json(results);
   } catch (error) {
     console.log(error.message);
@@ -104,12 +105,12 @@ router.post("/saveTour", async (req, res) => {
   }
 });
 
-router.post("getSavedTour", async (req, res) => {
+router.post("/getSavedTour", async (req, res) => {
   try {
     const db: Db = res.locals.db;
     const { userId } = req.body;
-    const results = await getSavedTourService(getSavedToursOfUser(db))(userId);
-
+    const tours = await getSavedTourService(getSavedToursOfUser(db))(userId);
+    const results = mapToTourId(tours);
     res.json(results);
   } catch (error) {
     console.log(error.message);
@@ -117,3 +118,9 @@ router.post("getSavedTour", async (req, res) => {
   }
 });
 export default router;
+
+function mapToTourId(item) {
+  return item.map(i => {
+    return i.tourId;
+  });
+}

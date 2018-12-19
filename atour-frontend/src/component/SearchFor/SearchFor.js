@@ -49,7 +49,12 @@ class SearchFor extends Component {
             </Flex>
 
             <Flex>
-              <Cards items={items} isUser={!isTour} tours={this.props.tours} />
+              <Cards
+                items={items}
+                isUser={!isTour}
+                tours={this.props.tours}
+                savedTourList={this.props.savedTourList}
+              />
             </Flex>
           </Box>
         </Flex>
@@ -60,7 +65,8 @@ class SearchFor extends Component {
 
 export default connect(
   state => ({
-    term: state.search,
+    savedTourList: state.user.savedTourList,
+    term: state.search.term,
     tours: state.tour.tourList,
     userList: state.user.otherUserList
   }),

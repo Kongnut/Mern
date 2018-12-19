@@ -1,0 +1,32 @@
+.publishTour-container {
+  padding: 40px 10% 0px 10%;
+}
+
+.publishTour-above-divider {
+  display: flex;
+  width: 100%;
+}
+
+.publishTour-header {
+  display: flex;
+}
+
+.publishTour-headerText {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 26pt;
+  max-width: 500px;
+}
+
+.publishTour-add-container {
+  margin-left: auto;
+  margin-top: auto;
+  float: right;
+}
+
+.publishTour-divider {
+  width: 100%;
+  margin: 15px 0 35px 0;
+  size: 10px;
+  border: solid 2px;
+}

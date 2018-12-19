@@ -9,6 +9,7 @@ import { EDIT_CONTACT_INFO, GET_USER_INFO } from "../action/UserInfoAction";
 import { SELECT_USER } from "../action/SelectAction";
 import { ON_SEARCH_USER } from "../action/SearchAction";
 import { PUBLISH_TOUR } from "../action/TourAction";
+import { GET_SAVED_TOUR, SAVE_TOUR } from "../action/UserInfoAction";
 
 const initialState = {
   isUpdated: false,
@@ -25,6 +26,7 @@ const initialState = {
   publishedTour: [],
   token: "",
   otherUserList: [],
+  savedTourList: [],
   selectedUser: {
     firstName: "",
     lastName: "",
@@ -33,6 +35,18 @@ const initialState = {
     publishedTourList: []
   }
 };
+
+function savedTourList(state = initialState.savedTourList, action) {
+  switch (action.type) {
+    case GET_SAVED_TOUR:
+    case SAVE_TOUR:
+      return action.payload;
+    case LOGOUT:
+      return [];
+    default:
+      return state;
+  }
+}
 
 function gender(state = initialState.gender, action) {
   switch (action.type) {
@@ -216,6 +230,7 @@ const reducer = combineReducers({
   token,
   isLoginSuccess,
   selectedUser,
+  savedTourList,
   otherUserList
 });
 

@@ -14,7 +14,7 @@ export type Gender = "Male" | "Female";
 
 export type UserSaveTour = {
   userId: string;
-  tour: Tour;
+  tourId: string;
 };
 
 export type User = {

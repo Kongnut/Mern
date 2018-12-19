@@ -16,7 +16,7 @@ export async function initMongo() {
     await client.connect();
     const db = client.db(dbName);
     const tour: Tour = {
-      tourId: "",
+      tourId: "123456",
       tourName: "tourName1",
       minimumSize: 5,
       maximumSize: 10,
@@ -28,7 +28,7 @@ export async function initMongo() {
         "https://vignette.wikia.nocookie.net/dragonballfanon/images/7/70/Random.png/revision/latest?cb=20161221030547"
     };
     const tour2: Tour = {
-      tourId: "",
+      tourId: "1234567",
       tourName: "tourName2",
       minimumSize: 5,
       maximumSize: 10,
@@ -39,13 +39,25 @@ export async function initMongo() {
       imageUrl:
         "https://vignette.wikia.nocookie.net/dragonballfanon/images/7/70/Random.png/revision/latest?cb=20161221030547"
     };
+    const tour3: Tour = {
+      tourId: "12345678",
+      tourName: "tourName3",
+      minimumSize: 5,
+      maximumSize: 10,
+      detail: "Published",
+      price: 5000,
+      userId: "123456",
+      isPublished: true,
+      imageUrl:
+        "https://vignette.wikia.nocookie.net/dragonballfanon/images/7/70/Random.png/revision/latest?cb=20161221030547"
+    };
     const user: User = {
       userId: "123456",
       firstName: "test",
       lastName: "test2",
       profileImageUrl:
         "https://vignette.wikia.nocookie.net/dragonballfanon/images/7/70/Random.png/revision/latest?cb=20161221030547",
-      publishedTour: [tour, tour2],
+      publishedTour: [tour, tour2, tour3],
       gender: "Male",
       age: 21,
       facebookUrl: "https://www.facebook.com/K0tinus",
@@ -53,12 +65,13 @@ export async function initMongo() {
       phoneNumber: "0817776720",
       token: ""
     };
+    await db.collection("userSaveTour").deleteMany({});
     await db.collection("user").deleteMany({});
     await db.collection("tour").deleteMany({});
     await db.collection("user").insertOne(user);
     await db.collection("tour").insertOne(tour);
     await db.collection("tour").insertOne(tour2);
-
+    await db.collection("tour").insertOne(tour3);
     return {
       client,
       db

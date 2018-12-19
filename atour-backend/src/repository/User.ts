@@ -9,8 +9,9 @@ export type UpdateUserContactDb = (
 ) => Promise<User>;
 export type GetPublishedToursOfUserDb = (userId: string) => Promise<Tour[]>;
 export type UpdatePublishedTourOfUserDb = (userId: string) => Promise<Tour[]>;
-export type GetSavedToursOfUserDb = (userId: string) => Promise<Tour[]>;
-export type SaveTourDb = (userId: string, tour: Tour) => Promise<Tour[]>;
+// export type GetSavedToursOfUserDb = (userId: string) => Promise<Tour[]>;
+export type GetSavedToursOfUserDb = (userId: string) => Promise<string[]>;
+export type SaveTourDb = (userId: string, tourId: string) => Promise<string[]>;
 
 export function getUser(db: Db): GetUserDb {
   return async userId => {
@@ -99,16 +100,14 @@ export function getSavedToursOfUser(db: Db): GetSavedToursOfUserDb {
 }
 
 export function saveTour(db: Db): SaveTourDb {
-  return async (userId, tour) => {
+  return async (userId, tourId) => {
     const isSaved = await db
       .collection("userSaveTour")
-      .findOne({ userId, "tour.tourId": tour.tourId });
+      .findOne({ userId, tourId });
     if (isSaved) {
-      await db
-        .collection("userSaveTour")
-        .remove({ userId, "tour.tourId": tour.tourId });
+      await db.collection("userSaveTour").remove({ userId, tourId });
     } else {
-      const userSaveTour = { userId, tour };
+      const userSaveTour = { userId, tourId };
       await db.collection("userSaveTour").insert(userSaveTour);
     }
     const tours = await db

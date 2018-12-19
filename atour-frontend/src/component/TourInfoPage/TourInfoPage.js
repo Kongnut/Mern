@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import "./styles.css";
 import autobind from "react-autobind";
 import { Redirect } from "react-router-dom";
-import { getOtherUserInfo } from "../../action/UserInfoAction";
+import { getOtherUserInfo, saveTour } from "../../action/UserInfoAction";
 import { editTour, deleteTour, deleted } from "../../action/TourAction";
 import { selectUser } from "../../action/SelectAction";
 import tourImage from "../../image/TourImage.png";
@@ -120,6 +120,15 @@ class TourInfo extends React.Component {
     );
   }
 
+  isSaved() {
+    if (!this.props.user.userId) return false;
+    const tour = this.props.savedTour.filter(t => {
+      return t === this.props.tourInfo.tourId;
+    });
+    if (tour.length > 0) return true;
+    return false;
+  }
+
   render() {
     if (!this.props.tourInfo.tourName || this.state.redirect) {
       return <Redirect to={this.state.to} />;
@@ -129,26 +138,41 @@ class TourInfo extends React.Component {
       price,
       detail,
       maximumSize,
-      minimumSize
+      minimumSize,
+      tourId
     } = this.props.tourInfo;
+    const isSaved = this.isSaved();
     const infoOrEdit =
       this.props.tourInfo.userId === this.props.user.userId ? (
         this.tourConfigButton()
       ) : (
-        <div
-          onClick={() => {
-            this.props.selectUser(this.props.otherUserInfo);
-            this.setState({ redirect: true, to: "/viewProfile" });
-          }}
-          className="tourInfo-userName"
-        >
-          by{" "}
-          {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ""}
+        <div className="tourInfo-save-user-container">
+          {this.props.user.userId && (
+            <button
+              onClick={() =>
+                this.props.saveTour(this.props.user.userId, tourId)
+              }
+              className={"btn tourInfo-" + (!isSaved ? "save" : "unsave")}
+            >
+              <i
+                className={"fa fa-" + (!isSaved ? "plus" : "minus") + "-circle"}
+              />{" "}
+              {!isSaved ? "Save" : "UnSave"}
+            </button>
+          )}
+          <div
+            onClick={() => {
+              this.props.selectUser(this.props.otherUserInfo);
+              this.setState({ redirect: true, to: "/viewProfile" });
+            }}
+            className="tourInfo-userName"
+          >
+            by{" "}
+            {this.props.otherUserInfo ? this.props.otherUserInfo.firstName : ""}
+          </div>
         </div>
       );
     const { screenWidth } = this.props;
-    const imageHeight =
-      screenWidth >= 950 ? "400px" : (screenWidth / 950) * 400 + "px";
     return (
       <div>
         <EditTourModal />
@@ -247,6 +271,7 @@ const mapStateToProps = state => {
     isDeleted: state.tour.isDeleted,
     otherUserInfo: state.tour.otherUserInfo,
     user: state.user,
+    savedTour: state.user.savedTourList,
     screenWidth: state.app.width
   };
 };
@@ -268,6 +293,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onClickDeleteTour: (tour, token) => {
     dispatch(deleteTour(tour, token));
+  },
+  saveTour: (userId, tourId) => {
+    dispatch(saveTour(userId, tourId));
   }
 });
 

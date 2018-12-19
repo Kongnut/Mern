@@ -80,3 +80,45 @@ export const VIEW_PROFILE = "VIEW_PROFILE";
 export function viewProfile() {
   return { type: VIEW_PROFILE };
 }
+
+export const GET_SAVED_TOUR = "GET_SAVED_TOUR";
+export function getSavedTour(userId) {
+  return async dispatch => {
+    try {
+      const res = await axios
+        .post("http://" + API_ENDPOINT + "/user/getSavedTour", {
+          userId
+        })
+        .then(res => {
+          return res.data;
+        });
+      return dispatch({
+        type: GET_SAVED_TOUR,
+        payload: res
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+export const SAVE_TOUR = "SAVE_TOUR";
+export function saveTour(userId, tourId) {
+  return async dispatch => {
+    try {
+      const res = await axios
+        .post("http://" + API_ENDPOINT + "/user/saveTour", {
+          tourId,
+          userId
+        })
+        .then(res => {
+          return res.data;
+        });
+      return dispatch({
+        type: SAVE_TOUR,
+        payload: res
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}

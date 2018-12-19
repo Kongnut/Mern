@@ -37,7 +37,7 @@ const Flexh100 = styled(Flex)`
   height: 100%;
 `;
 
-class App extends React.Component {
+class HomePage extends React.Component {
   componentDidMount() {
     this.props.getAllTour();
   }
@@ -76,7 +76,10 @@ class App extends React.Component {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
-                  <Cards items={this.props.tours} />
+                  <Cards
+                    savedTourList={this.props.savedTourList}
+                    items={this.props.tours}
+                  />
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -87,7 +90,8 @@ class App extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  tours: state.tour.tourList
+  tours: state.tour.tourList,
+  savedTourList: state.user.savedTourList
 });
 const mapDispatchToProps = dispatch => ({
   getAllTour: () => dispatch(onSearch("", true))
@@ -95,4 +99,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(App);
+)(HomePage);

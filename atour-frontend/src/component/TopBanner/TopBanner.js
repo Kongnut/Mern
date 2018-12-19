@@ -10,6 +10,7 @@ import autobind from "react-autobind";
 import SideMenu from "../SideMenu/SideMenu";
 import ClickOutSide from "react-click-outside-component";
 import PopUpModal from "../../component/PopUpModal/PopUpModal";
+import { getSavedTour } from "../../action/UserInfoAction";
 
 class TopBanner extends React.Component {
   constructor(props) {
@@ -32,6 +33,18 @@ class TopBanner extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (
+      (this.props.location.pathname === "/" ||
+        this.props.location.pathname === "/searchForTour" ||
+        this.props.location.pathname === "/searchForGuide") &&
+      nextProps.isSearched
+    ) {
+      if (this.props.userInfo && this.props.userInfo.userId)
+        this.props.getSavedTour(this.props.userInfo.userId);
+    }
+    if (!this.props.userInfo.userId && nextProps.userInfo.userId) {
+      nextProps.getSavedTour(nextProps.userInfo.userId);
+    }
     if (nextProps.userInfo.userId !== this.props.userInfo.userId) {
       this.setState({ isClickedDropdown: false });
     }
@@ -274,13 +287,15 @@ class TopBanner extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.user,
-  width: state.app.width
+  width: state.app.width,
+  isSearched: state.search.isSearched
 });
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
   login: userInfo => dispatch(login(userInfo)),
-  resizeWindow: width => dispatch(resizeWindow(width))
+  resizeWindow: width => dispatch(resizeWindow(width)),
+  getSavedTour: userId => dispatch(getSavedTour(userId))
 });
 
 export default connect(

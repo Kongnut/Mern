@@ -81,6 +81,6 @@ class SearchBar extends React.Component {
 }
 
 export default connect(
-  state => ({ term: state.search }),
+  state => ({ term: state.search.term }),
   { onChange, onSearch }
 )(SearchBar);

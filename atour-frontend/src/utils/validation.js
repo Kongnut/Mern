@@ -7,8 +7,8 @@ export function validatePhone(phone) {
 }
 
 export function validateTourName(tourName) {
-  if (!tourName || tourName.length > 20) {
-    return "Tour name must not longer than 20";
+  if (!tourName || tourName.length > 50) {
+    return "Tour name must not longer than 50";
   }
   return false;
 }
@@ -64,8 +64,8 @@ export function validatePrice(price) {
 }
 
 export function validateDetail(detail) {
-  if (!detail || detail.length < 20 || detail.length > 500) {
-    return "Detail must longer than 20 and not over 500";
+  if (!detail || detail.length < 100 || detail.length > 1000) {
+    return "Detail must longer than 100 and not over 1000";
   }
   return false;
 }

@@ -5,6 +5,7 @@ import { EDIT_TOUR, DELETE_TOUR, DELETED } from "../action/TourAction";
 import { GET_OTHER_USER_INFO } from "../action/UserInfoAction";
 const initialState = {
   tourList: [],
+  savedTourList: [],
   isDeleted: false,
   selectedTour: {
     tourName: "",

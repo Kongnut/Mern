@@ -280,10 +280,13 @@ class Profile extends React.Component {
         {isView ? (
           <div className="profilePage-tour-container">
             <div className="profilePage-tour-header">Tour</div>
-            <Cards isUser={false} items={publishedTour} />
+            <Cards
+              isUser={false}
+              items={publishedTour}
+              savedTourList={this.props.savedTourList}
+            />
           </div>
         ) : null}
-        <div style={{ marginBottom: "30px" }} />
       </div>
     );
   }
@@ -304,6 +307,7 @@ const mapStateToProps = state => {
     selectedUser
   } = state.user;
   return {
+    savedTourList: state.user.savedTourList,
     isUpdated: state.app.isUpdated,
     ownUser: {
       firstName,

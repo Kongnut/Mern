@@ -6,7 +6,7 @@ import {
   GetSavedToursOfUserDb
 } from "../repository/User";
 
-import { User, UserContact, Tour } from "../domain/types";
+import { User, UserContact } from "../domain/types";
 
 export type GetUserService = (userId: string) => Promise<User>;
 
@@ -14,9 +14,12 @@ export type LoginService = (userInfo: User, token: string) => Promise<User>;
 
 export type GetCustomerProfileService = (userId: string) => Promise<User>;
 
-export type GetSavedTourService = (userId: string) => Promise<Tour[]>;
+export type GetSavedTourService = (userId: string) => Promise<string[]>;
 
-export type SaveTourService = (userId: string, tour: Tour) => Promise<Tour[]>;
+export type SaveTourService = (
+  userId: string,
+  tourId: string
+) => Promise<string[]>;
 
 export type UpdateContactService = (
   userId: string,
@@ -47,8 +50,8 @@ export function loginService(updateUser: UpdateUserDb): LoginService {
 }
 
 export function saveTourService(saveTour: SaveTourDb): SaveTourService {
-  return async (userId, tour) => {
-    const tours = await saveTour(userId, tour);
+  return async (userId, tourId) => {
+    const tours = await saveTour(userId, tourId);
     return tours;
   };
 }

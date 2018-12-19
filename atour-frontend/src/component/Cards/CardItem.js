@@ -41,9 +41,21 @@ class CardItem extends React.Component {
               {this.filterString(this.props.item.tourName, 30)}
             </Card.Header>
             <Card.Meta>{this.props.item.price + " baht"}</Card.Meta>
-            <Card.Description>
+            <Card.Description
+              style={{ height: "140px", wordBreak: "break-all" }}
+            >
               {this.filterString(this.props.item.detail, 100)}
             </Card.Description>
+            {this.props.item.isSaved && (
+              <div>
+                <hr style={{ marginBottom: "11px" }} />
+                <Card.Description
+                  style={{ textAlign: "center", color: "#26abdc" }}
+                >
+                  Saved
+                </Card.Description>
+              </div>
+            )}
           </Card.Content>
         </Card>
       );
@@ -80,12 +92,17 @@ class CardItem extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    savedTour: state.user.savedTourList
+  };
+};
 const mapDispatchToProps = dispatch => ({
   selectTour: tour => dispatch(selectTour(tour)),
   selectUser: user => dispatch(selectUser(user))
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(CardItem);

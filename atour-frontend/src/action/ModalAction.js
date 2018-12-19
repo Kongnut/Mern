@@ -12,6 +12,7 @@ export function publishNewTour(isOpen) {
   if (isOpen) {
     payload = "publishNewTour";
   }
+  console.log(payload);
   return {
     type: OPEN_MODAL,
     payload

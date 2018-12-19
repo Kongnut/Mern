@@ -81,6 +81,7 @@
 .tourInfo-detail {
   width: 70%;
   padding-right: 50px;
+  word-break: break-all;
 }
 
 .tourInfo-info-container {
@@ -138,6 +139,53 @@
   font-size: 20px;
 }
 
+.tourInfo-save-user-container {
+  display: flex;
+}
+
+.tourInfo-save {
+  color: white;
+  margin-top: 4px;
+  background-color: #26abdc;
+  border-color: #26abdc;
+  margin-right: 10px;
+}
+
+.tourInfo-unsave {
+  margin-top: 4px;
+  background-color: #ec424b;
+  border-color: #ec424b;
+  color: white;
+  margin-right: 10px;
+}
+
+.tourInfo-unsave {
+  background-color: #cc0000;
+  border-color: #cc0000;
+}
+
+.tourInfo-save:hover {
+  background-color: #2297c7;
+  border-color: #2297c7;
+}
+
+@media screen and (max-width: 800px) {
+  .tourInfo-save-user-container {
+    display: block;
+  }
+  .tourInfo-save,
+  .tourInfo-unsave {
+    margin-right: 0px;
+    margin-top: 0px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .tourInfo-headerText {
+    word-break: break-all;
+  }
+}
+
 @media screen and (max-width: 500px) {
   .tourInfo-info-container {
     max-width: 233px;
@@ -166,7 +214,7 @@
     font-size: 16px;
   }
 
-  .tourinfo-info-item {
+  .tourInfo-info-item {
     font-size: 14px;
   }
 }
